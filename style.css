@@ -114,3 +114,23 @@ canvas {
 .delete-btn:hover {
   background: #c4446c;
 }
+
+#monthly-summary {
+  list-style: none;
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#monthly-summary li {
+  padding: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+#monthly-summary li:last-child {
+  border-bottom: none;
+}
+
