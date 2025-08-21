@@ -2,6 +2,7 @@
 const form = document.getElementById("expense-form");
 const expenseList = document.getElementById("expense-list");
 const ctx = document.getElementById("expense-chart").getContext("2d");
+const monthlySummary = document.getElementById("monthly-summary"); // ✅ new
 
 // Load expenses from localStorage or start empty
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
@@ -44,17 +45,18 @@ function renderExpenses() {
     expenseList.appendChild(row);
   });
 
-  // Add event listeners for delete buttons
+  // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       let index = e.target.getAttribute("data-index");
-      expenses.splice(index, 1); // remove from array
+      expenses.splice(index, 1); // remove expense
       saveExpenses();
-      renderExpenses();
+      renderExpenses(); // re-render after delete
     });
   });
 
   updateChart();
+  updateMonthlySummary(); // ✅ update monthly summary too
 }
 
 // Update chart with totals by category
@@ -67,6 +69,23 @@ function updateChart() {
   expenseChart.data.labels = Object.keys(categoryTotals);
   expenseChart.data.datasets[0].data = Object.values(categoryTotals);
   expenseChart.update();
+}
+
+// ✅ Update monthly summary
+function updateMonthlySummary() {
+  let monthlyTotals = {};
+
+  expenses.forEach(exp => {
+    let month = exp.date.slice(0, 7); // YYYY-MM
+    monthlyTotals[month] = (monthlyTotals[month] || 0) + parseFloat(exp.amount);
+  });
+
+  monthlySummary.innerHTML = "";
+  for (let [month, total] of Object.entries(monthlyTotals)) {
+    let li = document.createElement("li");
+    li.textContent = `${month}: ₹${total.toFixed(2)}`;
+    monthlySummary.appendChild(li);
+  }
 }
 
 // Handle form submit
