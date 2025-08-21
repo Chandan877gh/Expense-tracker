@@ -99,3 +99,19 @@ canvas {
     padding: 8px;
   }
 }
+
+/* Delete Button Styling */
+.delete-btn {
+  background: #FC5C8C;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.delete-btn:hover {
+  background: #c4446c;
+}
+
