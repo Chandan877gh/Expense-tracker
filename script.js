@@ -1,198 +1,134 @@
-// Grab DOM elements
-const monthlySummary = document.getElementById("monthly-summary");
-const form = document.getElementById("expense-form");
-const expenseList = document.getElementById("expense-list");
-const ctx = document.getElementById("expense-chart").getContext("2d");
+// script.js
 
-// Load expenses from localStorage or start empty
+// Elements
+const expenseForm = document.getElementById("expense-form");
+const expenseList = document.getElementById("expense-list");
+const monthlySummary = document.getElementById("monthly-summary");
+const expenseChartCanvas = document.getElementById("expense-chart");
+const monthlyChartCanvas = document.getElementById("monthlyChart");
+
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Initialize chart
-let expenseChart = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [{
-      label: "Expenses",
-      data: [],
-      backgroundColor: [
-        "#007FFF", "#FC5C8C", "#FF4500", "#32CD32", "#FFD700", "#8A2BE2"
-      ]
-    }]
-  },
-  options: {
-    responsive: true
-  }
-});
+// Chart instances
+let expenseChart;
+let monthlyChart;
 
 // Save to localStorage
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-// Render expense list
-function renderExpenses() {
-  expenseList.innerHTML = "";
-  expenses.forEach((exp, index) => {
-    let row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${exp.date}</td>
-      <td>${exp.category}</td>
-      <td>₹${exp.amount}</td>
-      <td>${exp.note}</td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
-    `;
-    expenseList.appendChild(row);
-  });
-
-  // Add event listeners for delete buttons
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      let index = e.target.getAttribute("data-index");
-      expenses.splice(index, 1); // remove from array
-      saveExpenses();
-      renderExpenses();
-    });
-  });
-
-  updateChart();
-}
-
-// Update monthly summary
-function updateMonthlySummary() {
-  let monthlyTotals = {};
-
-  expenses.forEach(exp => {
-    let month = exp.date.slice(0, 7); // format YYYY-MM
-    monthlyTotals[month] = (monthlyTotals[month] || 0) + parseFloat(exp.amount);
-  });
-
-  monthlySummary.innerHTML = "";
-  for (let [month, total] of Object.entries(monthlyTotals)) {
-    let li = document.createElement("li");
-    li.textContent = `${month}: ₹${total.toFixed(2)}`;
-    monthlySummary.appendChild(li);
-  }
-}
-
-// Update chart with totals by category
-function updateChart() {
-  let categoryTotals = {};
-  expenses.forEach(exp => {
-    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + parseFloat(exp.amount);
-  });
-
-  expenseChart.data.labels = Object.keys(categoryTotals);
-  expenseChart.data.datasets[0].data = Object.values(categoryTotals);
-  expenseChart.update();
-}
-
-// Handle form submit
-form.addEventListener("submit", (e) => {
+// Add Expense
+expenseForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const expense = {
-    date: document.getElementById("date").value,
-    category: document.getElementById("category").value,
-    amount: document.getElementById("amount").value,
-    note: document.getElementById("note").value
-  };
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const note = document.getElementById("note").value;
 
+  if (!date || !category || !amount) return;
+
+  const expense = { id: Date.now(), date, category, amount, note };
   expenses.push(expense);
   saveExpenses();
   renderExpenses();
+  updateCharts();
 
-  form.reset();
+  expenseForm.reset();
 });
 
-// Render expense list
+// Delete Expense
+function deleteExpense(id) {
+  expenses = expenses.filter(exp => exp.id !== id);
+  saveExpenses();
+  renderExpenses();
+  updateCharts();
+}
+
+// Render Expenses Table
 function renderExpenses() {
   expenseList.innerHTML = "";
-  expenses.forEach((exp, index) => {
-    let row = document.createElement("tr");
+  expenses.forEach(exp => {
+    const row = document.createElement("tr");
     row.innerHTML = `
       <td>${exp.date}</td>
       <td>${exp.category}</td>
-      <td>₹${exp.amount}</td>
-      <td>${exp.note}</td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+      <td>${exp.amount.toFixed(2)}</td>
+      <td>${exp.note || ""}</td>
+      <td><button onclick="deleteExpense(${exp.id})">Delete</button></td>
     `;
     expenseList.appendChild(row);
   });
-  updateChart();
-  updateMonthlySummary(); // update monthly summary too
 }
 
-  // Add delete button events
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      let index = e.target.getAttribute("data-index");
-      expenses.splice(index, 1);
-      saveExpenses();
-      renderExpenses();
-    });
+// Update Charts
+function updateCharts() {
+  // Category Summary (Pie Chart)
+  const categoryTotals = {};
+  expenses.forEach(exp => {
+    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
   });
 
-// Initial render
+  const categories = Object.keys(categoryTotals);
+  const amounts = Object.values(categoryTotals);
+
+  if (expenseChart) expenseChart.destroy();
+  expenseChart = new Chart(expenseChartCanvas, {
+    type: "pie",
+    data: {
+      labels: categories,
+      datasets: [{
+        label: "Expenses by Category",
+        data: amounts,
+        backgroundColor: [
+          "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+          "#9966FF", "#FF9F40", "#66FF66", "#FF6666"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  // Monthly Totals
+  const monthlyTotals = {};
+  expenses.forEach(exp => {
+    const month = exp.date.slice(0, 7); // YYYY-MM
+    monthlyTotals[month] = (monthlyTotals[month] || 0) + exp.amount;
+  });
+
+  monthlySummary.innerHTML = "";
+  for (const [month, total] of Object.entries(monthlyTotals)) {
+    const li = document.createElement("li");
+    li.textContent = `${month}: ${total.toFixed(2)}`;
+    monthlySummary.appendChild(li);
+  }
+
+  // Monthly Chart (Bar)
+  if (monthlyChart) monthlyChart.destroy();
+  monthlyChart = new Chart(monthlyChartCanvas, {
+    type: "bar",
+    data: {
+      labels: Object.keys(monthlyTotals),
+      datasets: [{
+        label: "Monthly Totals",
+        data: Object.values(monthlyTotals),
+        backgroundColor: "#36A2EB"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+// Initial Render
 renderExpenses();
-
-let chartInstance = null; // Store chart globally
-
-function updateChart(monthlyTotals) {
-    const ctx = document.getElementById("monthlyChart").getContext("2d");
-
-    const labels = Object.keys(monthlyTotals);
-    const data = Object.values(monthlyTotals);
-
-    if (chartInstance) {
-        chartInstance.destroy(); // Clear old chart before creating a new one
-    }
-
-    chartInstance = new Chart(ctx, {
-        type: "bar", // Change to "pie" if you want a pie chart
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Monthly Expenses",
-                data: data,
-                backgroundColor: "rgba(54, 162, 235, 0.7)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-// Modify updateMonthlySummary to also update chart
-function updateMonthlySummary() {
-    const monthlySummary = document.getElementById("monthly-summary");
-    monthlySummary.innerHTML = "";
-
-    const monthlyTotals = {};
-
-    expenses.forEach(exp => {
-        const month = exp.date.substring(0, 7); // YYYY-MM
-        monthlyTotals[month] = (monthlyTotals[month] || 0) + exp.amount;
-    });
-
-    for (const [month, total] of Object.entries(monthlyTotals)) {
-        const li = document.createElement("li");
-        li.textContent = `${month}: $${total.toFixed(2)}`;
-        monthlySummary.appendChild(li);
-    }
-
-    updateChart(monthlyTotals); // Update chart with new totals
-}
-
-
-
-
-
+updateCharts();
