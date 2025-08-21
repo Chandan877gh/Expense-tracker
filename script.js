@@ -120,7 +120,7 @@ function renderExpenses() {
     expenseList.appendChild(row);
   });
   updateChart();
-  updateMonthlySummary(); // ✅ update monthly summary too
+  updateMonthlySummary(); // update monthly summary too
 }
 
   // Add delete button events
@@ -135,6 +135,64 @@ function renderExpenses() {
 
 // Initial render
 renderExpenses();
+
+let chartInstance = null; // Store chart globally
+
+function updateChart(monthlyTotals) {
+    const ctx = document.getElementById("monthlyChart").getContext("2d");
+
+    const labels = Object.keys(monthlyTotals);
+    const data = Object.values(monthlyTotals);
+
+    if (chartInstance) {
+        chartInstance.destroy(); // Clear old chart before creating a new one
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: "bar", // Change to "pie" if you want a pie chart
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Monthly Expenses",
+                data: data,
+                backgroundColor: "rgba(54, 162, 235, 0.7)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Modify updateMonthlySummary to also update chart
+function updateMonthlySummary() {
+    const monthlySummary = document.getElementById("monthly-summary");
+    monthlySummary.innerHTML = "";
+
+    const monthlyTotals = {};
+
+    expenses.forEach(exp => {
+        const month = exp.date.substring(0, 7); // YYYY-MM
+        monthlyTotals[month] = (monthlyTotals[month] || 0) + exp.amount;
+    });
+
+    for (const [month, total] of Object.entries(monthlyTotals)) {
+        const li = document.createElement("li");
+        li.textContent = `${month}: $${total.toFixed(2)}`;
+        monthlySummary.appendChild(li);
+    }
+
+    updateChart(monthlyTotals); // Update chart with new totals
+}
+
+
 
 
 
