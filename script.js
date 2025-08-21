@@ -105,7 +105,7 @@ form.addEventListener("submit", (e) => {
   form.reset();
 });
 
-// Initial render
+// Render expense list
 function renderExpenses() {
   expenseList.innerHTML = "";
   expenses.forEach((exp, index) => {
@@ -119,6 +119,9 @@ function renderExpenses() {
     `;
     expenseList.appendChild(row);
   });
+  updateChart();
+  updateMonthlySummary(); // ✅ update monthly summary too
+}
 
   // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -130,8 +133,8 @@ function renderExpenses() {
     });
   });
 
-  updateChart();
-  updateMonthlySummary(); // ✅ new
-};
+// Initial render
+renderExpenses();
+
 
 
