@@ -32,16 +32,28 @@ function saveExpenses() {
 // Render expense list
 function renderExpenses() {
   expenseList.innerHTML = "";
-  expenses.forEach(exp => {
+  expenses.forEach((exp, index) => {
     let row = document.createElement("tr");
     row.innerHTML = `
       <td>${exp.date}</td>
       <td>${exp.category}</td>
       <td>₹${exp.amount}</td>
       <td>${exp.note}</td>
+      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
     `;
     expenseList.appendChild(row);
   });
+
+  // Add event listeners for delete buttons
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      let index = e.target.getAttribute("data-index");
+      expenses.splice(index, 1); // remove from array
+      saveExpenses();
+      renderExpenses();
+    });
+  });
+
   updateChart();
 }
 
@@ -77,3 +89,4 @@ form.addEventListener("submit", (e) => {
 
 // Initial render
 renderExpenses();
+
