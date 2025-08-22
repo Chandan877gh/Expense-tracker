@@ -152,6 +152,23 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     document.body.removeChild(a);
 });
 
+// SEARCH FEATURE
+document.getElementById("searchInput").addEventListener("input", function () {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll("#expense-list tr");
+
+  rows.forEach(row => {
+    const descriptionCell = row.cells[1].textContent.toLowerCase(); // description is in 2nd column
+    if (descriptionCell.includes(filter)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+});
+
+
+
 
 
 
