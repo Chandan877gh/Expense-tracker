@@ -197,7 +197,7 @@ function updateSummary(data = expenses) {
     monthlySummary[month] += parseFloat(exp.amount);
   });
 
-  const summaryList = document.getElementById("monthlySummary");
+  const summaryList = document.getElementById("monthly-summary");
   summaryList.innerHTML = "";
 
   for (let month in monthlySummary) {
@@ -206,6 +206,7 @@ function updateSummary(data = expenses) {
     summaryList.appendChild(li);
   }
 }
+
 
 
 
