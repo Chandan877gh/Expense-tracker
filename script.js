@@ -152,62 +152,6 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     document.body.removeChild(a);
 });
 
-// ---- Search and Filter Feature ----
-// ---- Setting Filtering logic ----
-// Listen for search input
-document.getElementById("searchInput").addEventListener("input", filterExpenses);
-
-// Listen for category filter
-document.getElementById("categoryFilter").addEventListener("change", filterExpenses);
-
-function filterExpenses() {
-  const searchText = document.getElementById("searchInput").value.toLowerCase();
-  const category = document.getElementById("categoryFilter").value;
-
-  const filtered = expenses.filter(exp => {
-    const matchesText = exp.description.toLowerCase().includes(searchText);
-    const matchesCategory = category === "" || exp.category === category;
-    return matchesText && matchesCategory;
-  });
-
-  renderExpenses(filtered); // Re-render with filtered data
-  updateSummary(filtered);  // Update monthly summary with filtered data
-}
-
-// ---- Update renderExpenses ----
-function renderExpenses(data = expenses) {
-  const expenseList = document.getElementById("expense-list");
-  expenseList.innerHTML = "";
-
-  data.forEach((exp, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${exp.date} - ${exp.description} - ${exp.category} - ₹${exp.amount}`;
-    expenseList.appendChild(li);
-  });
-}
-
-function updateSummary(data = expenses) {
-  const monthlySummary = {};
-
-  data.forEach(exp => {
-    const month = exp.date.slice(0, 7); // YYYY-MM
-    if (!monthlySummary[month]) {
-      monthlySummary[month] = 0;
-    }
-    monthlySummary[month] += parseFloat(exp.amount);
-  });
-
-  const summaryList = document.getElementById("monthly-summary");
-  summaryList.innerHTML = "";
-
-  for (let month in monthlySummary) {
-    const li = document.createElement("li");
-    li.textContent = `${month}: ₹${monthlySummary[month].toFixed(2)}`;
-    summaryList.appendChild(li);
-  }
-}
-
-
 
 
 
