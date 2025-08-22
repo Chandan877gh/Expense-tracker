@@ -176,7 +176,7 @@ function filterExpenses() {
 
 // ---- Update renderExpenses ----
 function renderExpenses(data = expenses) {
-  const expenseList = document.getElementById("expenseList");
+  const expenseList = document.getElementById("expense-list");
   expenseList.innerHTML = "";
 
   data.forEach((exp, index) => {
@@ -206,6 +206,7 @@ function updateSummary(data = expenses) {
     summaryList.appendChild(li);
   }
 }
+
 
 
 
