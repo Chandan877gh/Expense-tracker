@@ -121,16 +121,6 @@ document.getElementById("exportBtn").addEventListener("click", function() {
         let cols = row.querySelectorAll("td, th1, th2, th3, th4");
         let rowData = [];
 
-        // Skip the last column (Delete button)
-        cols.forEach((col, colIndex) => {
-            if (colIndex < cols.length - 1) {
-                rowData.push(col.innerText);
-            }
-        });
-
-        csvContent += rowData.join(",") + "\n";
-    });
-
     // Create downloadable file
     let blob = new Blob([csvContent], { type: "text/csv" });
     let url = window.URL.createObjectURL(blob);
@@ -143,6 +133,7 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
 
 
 
