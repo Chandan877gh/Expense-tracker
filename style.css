@@ -55,21 +55,6 @@ form button:hover {
   background: #005fcc;
 }
 
-/* styling for the filter bar */
-.filters {
-  display: flex;
-  justify-content: space-between;
-  margin: 15px 0;
-}
-
-.filters input,
-.filters select {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
 /* Table Styling */
 table {
   width: 100%;
@@ -148,5 +133,6 @@ canvas {
 #monthly-summary li:last-child {
   border-bottom: none;
 }
+
 
 
