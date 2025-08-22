@@ -4,10 +4,6 @@ const expenseList = document.getElementById("expense-list");
 const ctx = document.getElementById("expense-chart").getContext("2d");
 const monthlySummary = document.getElementById("monthly-summary"); // ✅ new
 
-// 🔍 New selectors for search & filter
-const searchInput = document.getElementById('search-input');
-const categoryFilter = document.getElementById('category-filter');
-
 // Load expenses from localStorage or start empty
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
@@ -92,27 +88,6 @@ function updateMonthlySummary() {
   }
 }
 
-// ========== Filter & Search Feature ==========
-// Re-render filtered expenses
-function renderFilteredExpenses() {
-  const searchValue = searchInput.value.toLowerCase();
-  const categoryValue = categoryFilter.value;
-
-  expenseList.innerHTML = '';
-
-  let filteredExpenses = expenses.filter(expense => {
-    const matchesSearch = expense.description.toLowerCase().includes(searchValue);
-    const matchesCategory = categoryValue ? expense.category === categoryValue : true;
-    return matchesSearch && matchesCategory;
-  });
-
-  filteredExpenses.forEach(expense => {
-    const li = document.createElement('li');
-    li.textContent = `${expense.date} - ${expense.description} - ₹${expense.amount} (${expense.category})`;
-    expenseList.appendChild(li);
-  });
-}
-
 // Handle form submit
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -130,10 +105,6 @@ form.addEventListener("submit", (e) => {
 
   form.reset();
 });
-
-// Listen to search & filter changes
-searchInput.addEventListener('input', renderFilteredExpenses);
-categoryFilter.addEventListener('change', renderFilteredExpenses);
 
 // Initial render
 renderExpenses();
@@ -180,6 +151,63 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
+// ---- Search and Filter Feature ----
+// ---- Setting Filtering logic ----
+// Listen for search input
+document.getElementById("searchInput").addEventListener("input", filterExpenses);
+
+// Listen for category filter
+document.getElementById("categoryFilter").addEventListener("change", filterExpenses);
+
+function filterExpenses() {
+  const searchText = document.getElementById("searchInput").value.toLowerCase();
+  const category = document.getElementById("categoryFilter").value;
+
+  const filtered = expenses.filter(exp => {
+    const matchesText = exp.description.toLowerCase().includes(searchText);
+    const matchesCategory = category === "" || exp.category === category;
+    return matchesText && matchesCategory;
+  });
+
+  renderExpenses(filtered); // Re-render with filtered data
+  updateSummary(filtered);  // Update monthly summary with filtered data
+}
+
+// ---- Update renderExpenses ----
+function renderExpenses(data = expenses) {
+  const expenseList = document.getElementById("expenseList");
+  expenseList.innerHTML = "";
+
+  data.forEach((exp, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${exp.date} - ${exp.description} - ${exp.category} - ₹${exp.amount}`;
+    expenseList.appendChild(li);
+  });
+}
+
+function updateSummary(data = expenses) {
+  const monthlySummary = {};
+
+  data.forEach(exp => {
+    const month = exp.date.slice(0, 7); // YYYY-MM
+    if (!monthlySummary[month]) {
+      monthlySummary[month] = 0;
+    }
+    monthlySummary[month] += parseFloat(exp.amount);
+  });
+
+  const summaryList = document.getElementById("monthlySummary");
+  summaryList.innerHTML = "";
+
+  for (let month in monthlySummary) {
+    const li = document.createElement("li");
+    li.textContent = `${month}: ₹${monthlySummary[month].toFixed(2)}`;
+    summaryList.appendChild(li);
+  }
+}
+
+
 
 
 
