@@ -118,7 +118,7 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     let csvContent = "";
 
     rows.forEach((row, rowIndex) => {
-        let cols = row.querySelectorAll("td, th1, th2, th3, th4");
+        let cols = row.querySelectorAll("td, dat, cat, amt, not");
         let rowData = [];
 
         // Skip the last column (Delete button)
@@ -143,6 +143,7 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
 
 
 
