@@ -108,3 +108,32 @@ form.addEventListener("submit", (e) => {
 
 // Initial render
 renderExpenses();
+
+// ---------------- Existing Code ----------------
+
+// ---------------- Export CSV Feature ----------------
+document.getElementById("exportBtn").addEventListener("click", function() {
+    let table = document.getElementById("expenseTable");
+    let rows = table.querySelectorAll("tr");
+    let csvContent = "";
+
+    rows.forEach(row => {
+        let cols = row.querySelectorAll("td, th");
+        let rowData = [];
+        cols.forEach(col => rowData.push(col.innerText));
+        csvContent += rowData.join(",") + "\n";
+    });
+
+    // Create a downloadable file
+    let blob = new Blob([csvContent], { type: "text/csv" });
+    let url = window.URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "expenses.csv");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+
