@@ -111,20 +111,27 @@ renderExpenses();
 
 // ---------------- Existing Code ----------------
 
-// ---------------- Export CSV Feature ----------------
+// ---- Export CSV Feature ----
 document.getElementById("exportBtn").addEventListener("click", function() {
     let table = document.getElementById("expenseTable");
     let rows = table.querySelectorAll("tr");
     let csvContent = "";
 
-    rows.forEach(row => {
+    rows.forEach((row, rowIndex) => {
         let cols = row.querySelectorAll("td, th");
         let rowData = [];
-        cols.forEach(col => rowData.push(col.innerText));
+
+        // Skip the last column (Delete button)
+        cols.forEach((col, colIndex) => {
+            if (colIndex < cols.length - 1) {
+                rowData.push(col.innerText);
+            }
+        });
+
         csvContent += rowData.join(",") + "\n";
     });
 
-    // Create a downloadable file
+    // Create downloadable file
     let blob = new Blob([csvContent], { type: "text/csv" });
     let url = window.URL.createObjectURL(blob);
 
@@ -136,4 +143,5 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
 
