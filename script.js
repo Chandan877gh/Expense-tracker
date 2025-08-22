@@ -117,14 +117,22 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     let rows = table.querySelectorAll("tr");
     let csvContent = "";
 
-    rows.forEach((row) => {
-        let cols = row.querySelectorAll("th, td"); // get both header + body cells
+    rows.forEach((row, rowIndex) => {
+        let cols = row.querySelectorAll("th, td"); // include headers too
         let rowData = [];
 
-        // Skip the last column (Action/Delete)
+        // Skip the last column (Action/Delete button)
         cols.forEach((col, colIndex) => {
             if (colIndex < cols.length - 1) {
-                rowData.push(col.innerText.trim());
+                let text = col.innerText.trim();
+
+                // If it's the Amount column (3rd column, index = 2), strip symbols
+                if (rowIndex > 0 && colIndex === 2) {
+                    text = text.replace(/[^0-9.-]+/g, ""); 
+                    // removes everything except digits, minus, and dot
+                }
+
+                rowData.push(text);
             }
         });
 
@@ -143,6 +151,8 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
+
 
 
 
