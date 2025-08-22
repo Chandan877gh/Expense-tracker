@@ -111,20 +111,20 @@ renderExpenses();
 
 // ---------------- Existing Code ----------------
 
-// ---- Export CSV Feature (Fixed: Remove Delete Column) ----
+// ---- Export CSV Feature ----
 document.getElementById("exportBtn").addEventListener("click", function() {
     let table = document.getElementById("expenseTable");
     let rows = table.querySelectorAll("tr");
     let csvContent = "";
 
     rows.forEach((row, rowIndex) => {
-        let cols = row.querySelectorAll("td, th");
+        let cols = row.querySelectorAll("td, th1, th2, th3, th4");
         let rowData = [];
 
+        // Skip the last column (Delete button)
         cols.forEach((col, colIndex) => {
-            // Skip last column (Delete button)
-            if (!(rowIndex > 0 && colIndex === cols.length - 1)) {
-                rowData.push(col.innerText.trim());
+            if (colIndex < cols.length - 1) {
+                rowData.push(col.innerText);
             }
         });
 
@@ -143,6 +143,8 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
+
 
 
 
