@@ -117,14 +117,14 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     let rows = table.querySelectorAll("tr");
     let csvContent = "";
 
-    rows.forEach((row, rowIndex) => {
-        let cols = row.querySelectorAll("td, dat, cat, amt, not");
+    rows.forEach((row) => {
+        let cols = row.querySelectorAll("th, td"); // get both header + body cells
         let rowData = [];
 
-        // Skip the last column (Delete button)
+        // Skip the last column (Action/Delete)
         cols.forEach((col, colIndex) => {
             if (colIndex < cols.length - 1) {
-                rowData.push(col.innerText);
+                rowData.push(col.innerText.trim());
             }
         });
 
@@ -143,6 +143,7 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     a.click();
     document.body.removeChild(a);
 });
+
 
 
 
