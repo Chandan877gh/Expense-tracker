@@ -152,23 +152,22 @@ document.getElementById("exportBtn").addEventListener("click", function() {
     document.body.removeChild(a);
 });
 
-// Search filter
-document.getElementById("searchInput").addEventListener("keyup", function() {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#expense-list tr");
+// Search feature
+document.getElementById("searchInput").addEventListener("input", function () {
+  let filter = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#expense-list tr");
 
-    rows.forEach(row => {
-        let date = row.cells[0].textContent.toLowerCase();
-        let category = row.cells[1].textContent.toLowerCase();
-        let description = row.cells[2].textContent.toLowerCase();
-
-        if (date.includes(filter) || category.includes(filter) || description.includes(filter)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
+  rows.forEach(row => {
+    let text = row.innerText.toLowerCase();  // Check whole row (date, category, description, amount)
+    if (text.includes(filter)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
 });
+
+
 
 
 
