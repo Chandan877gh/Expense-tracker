@@ -43,6 +43,7 @@ function renderExpenses() {
     `;
     expenseList.appendChild(row);
   });
+  
   // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -176,7 +177,6 @@ function renderExpenses() {
       <td>${expense.category}</td>
       <td>₹${expense.amount}</td>
       <td>${expense.note}</td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
       <td>
         ${expense.photo 
           ? `
@@ -212,6 +212,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
