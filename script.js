@@ -168,14 +168,6 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// Modify addExpense() to include a photo placeholder
-function addExpense(date, catgory, amount, note, photo = null) {
-    expenses.push({ date, catgory, amount, note, photo });
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
-    renderMonthlySummary();
-}
-
 // Add "Bill Photo" column with capture/upload & download
 function renderExpenses() {
     const tbody = document.querySelector("#expenseTable tbody");
@@ -219,6 +211,7 @@ function capturePhoto(index) {
 
     input.click();
 }
+
 
 
 
