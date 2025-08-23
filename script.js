@@ -167,38 +167,53 @@ document.getElementById("searchInput").addEventListener("input", function () {
   });
 });
 
-// --- Bill Capture Feature ---
+// ---- Capture bill feature ----
 document.getElementById("bill").addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    const file = event.target.files[0]; // first uploaded file
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        // Create image preview + download link
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.width = 80; // small preview
+    if (file) {
+        // Store file info in your expenses array
+        expenses.push({
+            date: new Date().toLocaleDateString(),
+            name: file.name,
+            type: "Bill Upload",
+            amount: 0, // default since amount isn’t extracted
+            file: URL.createObjectURL(file) // creates a preview link
+        });
 
-        const link = document.createElement("a");
-        link.href = e.target.result;
-        link.download = file.name || "bill.jpg";
-        link.innerText = "Download";
-
-        // Insert into Bills Column of last added row
-        const table = document.getElementById("expenseTable");
-        const lastRow = table.rows[table.rows.length - 1];
-        if (lastRow) {
-            const billCell = lastRow.insertCell(-1);
-            billCell.appendChild(img);
-            billCell.appendChild(document.createElement("br"));
-            billCell.appendChild(link);
-        }
-    };
-    reader.readAsDataURL(file);
-
-    // Reset input (so same file can be uploaded again if needed)
-    event.target.value = "";
+        // Refresh table after adding new expense
+        updateTable();
+    }
 });
+
+// Update table function (adds column for uploaded bills)
+function updateTable() {
+    const tbody = document.getElementById("expenseTable").getElementsByTagName("tbody")[0];
+    tbody.innerHTML = "";
+
+    expenses.forEach((expense, index) => {
+        const row = tbody.insertRow();
+
+        row.insertCell(0).innerText = index + 1;
+        row.insertCell(1).innerText = expense.date;
+        row.insertCell(2).innerText = expense.name;
+        row.insertCell(3).innerText = expense.type;
+        row.insertCell(4).innerText = expense.amount;
+
+        // Uploaded Bill column
+        const billCell = row.insertCell(5);
+        if (expense.file) {
+            const link = document.createElement("a");
+            link.href = expense.file;
+            link.target = "_blank";
+            link.innerText = "View Bill";
+            billCell.appendChild(link);
+        } else {
+            billCell.innerText = "—";
+        }
+    });
+}
+
 
 
 
