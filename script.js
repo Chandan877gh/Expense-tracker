@@ -167,6 +167,61 @@ document.getElementById("searchInput").addEventListener("input", function () {
   });
 });
 
+// Capture bill feature
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+document.getElementById("addExpenseBtn").addEventListener("click", function () {
+    let date = document.getElementById("date").value;
+    let amount = document.getElementById("amount").value;
+    let fileInput = document.getElementById("billPhoto");
+
+    if (!date || !amount) {
+        alert("Please enter date and amount");
+        return;
+    }
+
+    let reader = new FileReader();
+    if (fileInput.files[0]) {
+        reader.readAsDataURL(fileInput.files[0]);
+        reader.onload = function () {
+            saveExpense(date, amount, reader.result);
+        };
+    } else {
+        saveExpense(date, amount, null);
+    }
+});
+
+function saveExpense(date, amount, billImage) {
+    let expense = { date, amount, billImage };
+    expenses.push(expense);
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    displayExpenses();
+}
+
+function displayExpenses() {
+    let list = document.getElementById("expenseList");
+    list.innerHTML = "";
+    expenses.forEach((exp, index) => {
+        let li = document.createElement("li");
+        li.innerHTML = `${exp.date} - ₹${exp.amount}`;
+        if (exp.billImage) {
+            let img = document.createElement("img");
+            img.src = exp.billImage;
+            img.width = 50;
+            img.height = 50;
+            li.appendChild(img);
+
+            let downloadBtn = document.createElement("a");
+            downloadBtn.href = exp.billImage;
+            downloadBtn.download = `bill-${index + 1}.png`;
+            downloadBtn.innerText = " Download Bill";
+            li.appendChild(downloadBtn);
+        }
+        list.appendChild(li);
+    });
+}
+
+displayExpenses();
 
 
 
