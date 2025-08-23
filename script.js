@@ -193,13 +193,6 @@ function addExpenseRow(date, category, amount, note) {
   noteCell.textContent = note;
   row.appendChild(noteCell);
 
-  // Bill Upload
-  const billCell = document.createElement("td");
-  billCell.innerHTML = `
-    <input type="file" class="bill-upload" accept="image/*" capture="environment">
-  `;
-  row.appendChild(billCell);
-
   // Action (Delete button)
   const actionCell = document.createElement("td");
   const deleteBtn = document.createElement("button");
@@ -207,12 +200,20 @@ function addExpenseRow(date, category, amount, note) {
   deleteBtn.onclick = function () {
     row.remove();
   };
+
+  // Bill Upload
+  const billCell = document.createElement("td");
+  billCell.innerHTML = `
+    <input type="file" class="bill-upload" accept="image/*" capture="environment">
+  `;
   actionCell.appendChild(deleteBtn);
   row.appendChild(actionCell);
+  row.appendChild(billCell);
 
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
