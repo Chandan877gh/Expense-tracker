@@ -43,7 +43,7 @@ function renderExpenses() {
     `;
     expenseList.appendChild(row);
   });
-  
+  /*
   // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -57,7 +57,7 @@ function renderExpenses() {
   updateChart();
   updateMonthlySummary(); // update monthly summary too
 }
-
+*/
 // Update chart with totals by category
 function updateChart() {
   let categoryTotals = {};
@@ -167,7 +167,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-function renderExpenses() {
+/*function renderExpenses() {
   expenseList.innerHTML = "";
   expenses.forEach((expense, index) => {
     let row = document.createElement("tr");
@@ -225,7 +225,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
-
+*/
 // ---- Edit feature ----
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -369,7 +369,6 @@ function renderExpenses() {
           : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
         }
       </td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
     `;
     expenseList.appendChild(row);
   });
@@ -391,6 +390,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
