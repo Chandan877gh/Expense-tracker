@@ -168,6 +168,52 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
+function renderExpenses() {
+  expenseList.innerHTML = "";
+  expenses.forEach((expense, index) => {
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${expense.date}</td>
+      <td>${expense.category}</td>
+      <td>₹${expense.amount}</td>
+      <td>${expense.note}</td>
+      <td><button onclick="removeExpense(${index})">❌</button></td>
+      <td>
+        ${expense.photo 
+          ? `
+            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+            <button onclick="removePhoto(${index})">🗑 Remove</button>
+          `
+          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+        }
+      </td>
+    `;
+    expenseList.appendChild(row);
+  });
+  updateMonthlySummary();
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+
+function uploadPhoto(event, index) {
+  let file = event.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    expenses[index].photo = e.target.result; // save base64 image
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto(index) {
+  expenses[index].photo = null;
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+  renderExpenses();
+}
+
 
 
 
