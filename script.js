@@ -231,6 +231,7 @@ let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
+
 function renderExpenses() {
     const expenseList = document.getElementById("expense-list");
     expenseList.innerHTML = "";
@@ -271,6 +272,52 @@ function renderExpenses() {
     updateMonthlyTotals();
     updateChart();
 }
+
+function addExpense(event) {
+  event.preventDefault();
+
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const note = document.getElementById("note").value;
+
+  if (!date || !category || !amount) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  expenses.push({ date, category, amount, note });
+  saveExpenses();
+  renderExpenses();
+  document.getElementById("expense-form").reset();
+}
+
+function deleteExpense(index) {
+  expenses.splice(index, 1);
+  saveExpenses();
+  renderExpenses();
+}
+
+function editExpense(index) {
+  const expense = expenses[index];
+
+  // Fill the form with the expense values
+  document.getElementById("date").value = expense.date;
+  document.getElementById("category").value = expense.category;
+  document.getElementById("amount").value = expense.amount;
+  document.getElementById("note").value = expense.note;
+
+  // Remove the old one while editing
+  expenses.splice(index, 1);
+  saveExpenses();
+  renderExpenses();
+}
+
+document.getElementById("expense-form").addEventListener("submit", addExpense);
+
+renderExpenses();
+
+
 
 
 
