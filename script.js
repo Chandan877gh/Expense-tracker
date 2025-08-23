@@ -168,6 +168,44 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
+// Create Upload Button
+const uploadBtn = document.createElement("button");
+uploadBtn.className = "upload-btn";
+uploadBtn.textContent = "Upload";
+billCell.appendChild(uploadBtn);
+
+// File input (hidden)
+const fileInput = document.createElement("input");
+fileInput.type = "file";
+fileInput.className = "bill-upload";
+fileInput.accept = "image/*";
+fileInput.style.display = "none";
+billCell.appendChild(fileInput);
+
+// Trigger input on button click
+uploadBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+// Handle file selection
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) {
+    uploadBtn.textContent = "Uploaded ✅";
+  }
+});
+
+// Create Delete Button
+const deleteBtn = document.createElement("button");
+deleteBtn.className = "delete-btn";
+deleteBtn.textContent = "Delete";
+billCell.appendChild(deleteBtn);
+
+// Delete functionality
+deleteBtn.addEventListener("click", () => {
+  fileInput.value = ""; // clear file
+  uploadBtn.textContent = "Upload"; // reset button text
+});
+
 
 
 
