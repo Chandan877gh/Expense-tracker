@@ -24,6 +24,12 @@
 
   <input type="number" id="amount" placeholder="Amount" required>
   <input type="text" id="note" placeholder="Note">
+  
+  <!-- Capture Bill Feature -->
+  <label for="billPhoto">Upload / Capture Bill:</label>
+  <input type="file" id="billPhoto" accept="image/*" capture="environment">
+
+  <ul id="expenseList"></ul>
   <button type="submit">Add Expense</button>
 </form>
 
@@ -64,6 +70,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
