@@ -148,32 +148,27 @@ canvas {
   outline: none;
 }
 
-/* Upload Bill Button Styling */
-/* Hide the default file input */
-.bill-upload {
-  display: none;
-}
-
-/* Custom styled upload button */
-.upload-label {
+.upload-btn {
   display: inline-block;
   padding: 8px 14px;
   background-color: #007bff; /* Blue */
-  color: white;
+  color: #fff;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
-.upload-label:hover {
+.upload-btn:hover {
   background-color: #0056b3; /* Darker blue */
 }
 
-.upload-label:active {
-  background-color: #003f7f;
+.upload-btn input[type="file"] {
+  display: none; /* Hide actual file input */
 }
+
+
 
 
 
