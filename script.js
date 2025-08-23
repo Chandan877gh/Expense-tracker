@@ -168,55 +168,8 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// Function to add a new expense row
-function addExpenseRow(date, category, amount, note) {
-  const tableBody = document.getElementById("expense-list");
-  const row = document.createElement("tr");
 
-  // Date
-  const dateCell = document.createElement("td");
-  dateCell.textContent = date;
-  row.appendChild(dateCell);
 
-  // Category
-  const categoryCell = document.createElement("td");
-  categoryCell.textContent = category;
-  row.appendChild(categoryCell);
-
-  // Amount
-  const amountCell = document.createElement("td");
-  amountCell.textContent = amount;
-  row.appendChild(amountCell);
-
-  // Note
-  const noteCell = document.createElement("td");
-  noteCell.textContent = note;
-  row.appendChild(noteCell);
-
-  // Action (Delete button)
-  const actionCell = document.createElement("td");
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.onclick = function () {
-    row.remove();
-  };
-
-  actionCell.appendChild(deleteBtn);
-  row.appendChild(actionCell);
-
-  // Bill Upload Column
-  const billCell = document.createElement("td");
-  billCell.innerHTML = `
-    <label class=".upload-btn">
-      Upload Bill
-      <input type="file" class="bill-upload" accept="image/*" capture="environment">
-    </label>
-  `;
-  row.appendChild(billCell);
-
-  // Add row to table
-  tableBody.appendChild(row);
-}
 
 
 
