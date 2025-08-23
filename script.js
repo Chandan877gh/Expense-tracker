@@ -226,7 +226,7 @@ function removePhoto(index) {
   renderExpenses();
 }*/
   
-// ---- Edit feature ----
+/*// ---- Edit feature ----
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
@@ -346,7 +346,8 @@ function editExpense(index) {
 
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
-renderExpenses();
+renderExpenses();*/
+
 
 
 
