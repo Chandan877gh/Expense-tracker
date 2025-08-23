@@ -205,18 +205,19 @@ function addExpenseRow(date, category, amount, note) {
   row.appendChild(actionCell);
 
   // Bill Upload Column
-const billCell = document.createElement("td");
-billCell.innerHTML = `
-  <label class="upload-btn">
-    Upload Bill
-    <input type="file" class="bill-upload" accept="image/*" capture="environment">
-  </label>
-`;
-row.appendChild(billCell);
+  const billCell = document.createElement("td");
+  billCell.innerHTML = `
+    <label class=".upload-btn">
+      Upload Bill
+      <input type="file" class="bill-upload" accept="image/*" capture="environment">
+    </label>
+  `;
+  row.appendChild(billCell);
 
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
