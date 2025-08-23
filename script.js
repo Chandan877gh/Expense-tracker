@@ -190,6 +190,7 @@ function renderExpenses() {
     `;
     expenseList.appendChild(row);
   });
+  updateChart();
   updateMonthlySummary();
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
@@ -212,6 +213,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
