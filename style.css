@@ -148,6 +148,38 @@ canvas {
   outline: none;
 }
 
+/* Upload Button Styling */
+.upload-btn, .delete-btn {
+  padding: 6px 14px;
+  margin: 4px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Upload Button */
+.upload-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.upload-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Delete Button */
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #a71d2a;
+}
+
+
 
 
 
