@@ -177,7 +177,7 @@ function renderExpenses() {
       <td>${expense.category}</td>
       <td>₹${expense.amount}</td>
       <td>${expense.note}</td>
-      <td><button onclick="removeExpense(${index})">Delete</button></td>
+      <td><button onclick="deleteExpense(${index})">Delete</button></td>
       <td>
         ${expense.photo 
           ? `
@@ -212,6 +212,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
