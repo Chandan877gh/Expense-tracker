@@ -157,7 +157,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
   let rows = document.querySelectorAll("#expense-list tr");
 
   rows.forEach(row => {
-    let text = row.innerText.toLowerCase();  // Check whole row (date, category, description, amount)
+    let text = row.innerText.toLowerCase();  // Check whole row (date, category, amount, note)
     if (text.includes(filter)) {
       row.style.display = "";
     } else {
@@ -177,6 +177,7 @@ function renderExpenses() {
       <td>${expense.category}</td>
       <td>₹${expense.amount}</td>
       <td>${expense.note}</td>
+      <td>${expense.edit}</td>
       <td>
         ${expense.photo 
           ? `
@@ -226,8 +227,6 @@ function removePhoto(index) {
 }
 
 // ---- Edit feature ----
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
@@ -316,6 +315,7 @@ function editExpense(index) {
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
 renderExpenses();
+
 
 
 
