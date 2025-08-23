@@ -201,6 +201,9 @@ function addExpenseRow(date, category, amount, note) {
     row.remove();
   };
 
+  actionCell.appendChild(deleteBtn);
+  row.appendChild(actionCell);
+
   // Bill Upload
   const billCell = document.createElement("td");
   const billLabel = document.createElement("label");
@@ -222,12 +225,10 @@ function addExpenseRow(date, category, amount, note) {
   billCell.appendChild(billInput);
   row.appendChild(billCell);
 
-  actionCell.appendChild(deleteBtn);
-  row.appendChild(actionCell);
-
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
