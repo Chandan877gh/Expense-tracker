@@ -225,6 +225,53 @@ function removePhoto(index) {
   renderExpenses();
 }
 
+// ---- Edit feature ----
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+function saveExpenses() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+function renderExpenses() {
+    const expenseList = document.getElementById("expense-list");
+    expenseList.innerHTML = "";
+
+    expenses.forEach((expense, index) => {
+        const tr = document.createElement("tr");
+
+        if (expense.editing) {
+            // Editable row
+            tr.innerHTML = `
+                <td><input type="date" id="edit-date-${index}" value="${expense.date}"></td>
+                <td><input type="text" id="edit-category-${index}" value="${expense.category}"></td>
+                <td><input type="number" id="edit-amount-${index}" value="${expense.amount}"></td>
+                <td><input type="text" id="edit-note-${index}" value="${expense.note}"></td>
+                <td>
+                    <button onclick="saveEdit(${index})">💾 Save</button>
+                    <button onclick="cancelEdit(${index})">❌ Cancel</button>
+                </td>
+            `;
+        } else {
+            // Normal row
+            tr.innerHTML = `
+                <td>${expense.date}</td>
+                <td>${expense.category}</td>
+                <td>₹${expense.amount}</td>
+                <td>${expense.note}</td>
+                <td>
+                    <button onclick="editExpense(${index})">✏️ Edit</button>
+                    <button onclick="deleteExpense(${index})">🗑️ Delete</button>
+                </td>
+            `;
+        }
+
+        expenseList.appendChild(tr);
+    });
+
+    updateSummary();
+    updateMonthlyTotals();
+    updateChart();
+}
+
 
 
 
