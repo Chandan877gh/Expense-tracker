@@ -183,11 +183,7 @@ function renderExpenses() {
     expenses.forEach((exp, index) => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-                <td>${exp.date}</td>
-                <td>${exp.category}</td>
-                <td>₹${exp.amount}</td>
-                <td>${exp.note}</td>
-                <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+           <td>
                 ${exp.photo 
                     ? `<a href="${exp.photo}" download="bill-${index}.png">Download</a>` 
                     : `<button onclick="capturePhoto(${index})">Upload/Capture</button>`}
@@ -217,6 +213,7 @@ function capturePhoto(index) {
 
     input.click();
 }
+
 
 
 
