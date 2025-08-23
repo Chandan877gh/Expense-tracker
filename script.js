@@ -226,7 +226,6 @@ renderExpenses();
 }
 
 // ---- Edit feature ----
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -348,4 +347,5 @@ function editExpense(index) {
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
 renderExpenses();
+
 
