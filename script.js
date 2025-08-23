@@ -168,65 +168,50 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// --- BILL column (put this before tableBody.appendChild(row);) ---
-const billCell = document.createElement("td");
+// Add "Bill Photo" column with capture/upload & download
+function renderExpenses() {
+    const tbody = document.querySelector("#expenseTable tbody");
+    tbody.innerHTML = "";
 
-// Visible Upload button
-const uploadBtn = document.createElement("button");
-uploadBtn.type = "button";
-uploadBtn.className = "upload-btn";
-uploadBtn.textContent = "Upload Bill";
+    expenses.forEach((exp, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${exp.date}</td>
+            <td>${exp.description}</td>
+            <td>₹${exp.amount}</td>
+            <td>${exp.category}</td>
+            <td><button onclick="deleteExpense(${index})">Delete</button></td>
+            <td>
+                ${exp.photo 
+                    ? `<a href="${exp.photo}" download="bill-${index}.png">Download</a>` 
+                    : `<button onclick="capturePhoto(${index})">Upload/Capture</button>`}
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
-// Hidden file input
-const fileInput = document.createElement("input");
-fileInput.type = "file";
-fileInput.accept = "image/*";
-fileInput.setAttribute("capture", "environment");
-fileInput.style.display = "none";
+// Capture or upload photo
+function capturePhoto(index) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.capture = "environment"; // opens camera on mobile
 
-// Clear button (resets the upload)
-const clearBtn = document.createElement("button");
-clearBtn.type = "button";
-clearBtn.className = "bill-clear-btn";
-clearBtn.textContent = "Clear";
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            expenses[index].photo = reader.result; // Save base64
+            localStorage.setItem("expenses", JSON.stringify(expenses));
+            renderExpenses();
+        };
+        if (file) reader.readAsDataURL(file);
+    };
 
-// Click Upload → open file picker/camera
-uploadBtn.addEventListener("click", () => fileInput.click());
+    input.click();
+}
 
-// When a file is chosen, show a View link and mark as uploaded
-fileInput.addEventListener("change", () => {
-  // remove previous view link if any
-  const oldView = billCell.querySelector(".bill-view-link");
-  if (oldView) oldView.remove();
-
-  if (fileInput.files && fileInput.files[0]) {
-    uploadBtn.textContent = "Uploaded ✅";
-    const view = document.createElement("a");
-    view.href = URL.createObjectURL(fileInput.files[0]);
-    view.target = "_blank";
-    view.textContent = "View";
-    view.className = "bill-view-link";
-    billCell.appendChild(view);
-  } else {
-    uploadBtn.textContent = "Upload Bill";
-  }
-});
-
-// Clear only the file for this row
-clearBtn.addEventListener("click", () => {
-  fileInput.value = "";
-  uploadBtn.textContent = "Upload Bill";
-  const view = billCell.querySelector(".bill-view-link");
-  if (view) view.remove();
-});
-
-// Assemble Bill cell
-billCell.appendChild(uploadBtn);
-billCell.appendChild(fileInput);
-billCell.appendChild(clearBtn);
-
-// IMPORTANT: append Bill cell to the row AFTER Action cell
-row.appendChild(billCell);
 
 
 
