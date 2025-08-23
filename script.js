@@ -186,9 +186,21 @@ function renderExpenses() {
           : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
         }
       </td>
+      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
     `;
     expenseList.appendChild(row);
   });
+  
+  // Add delete button events
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      let index = e.target.getAttribute("data-index");
+      expenses.splice(index, 1); // remove expense
+      saveExpenses();
+      renderExpenses(); // re-render after delete
+    });
+  });
+
   updateChart();
   updateMonthlySummary();
   localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -212,6 +224,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
