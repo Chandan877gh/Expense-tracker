@@ -214,7 +214,7 @@ function addExpenseRow(date, category, amount, note) {
   billInput.setAttribute("capture", "environment");
   billInput.style.display = "none"; // hide raw file input
   
-  const billLabel = document.createElement(".upload-label");
+  const billLabel = document.createElement("upload-label");
   billLabel.textContent = "Upload Bill";
   billLabel.setAttribute("for", `bill-${Date.now()}`); // link label to input
   billLabel.className = "upload-label"; // apply CSS styling
@@ -229,6 +229,7 @@ function addExpenseRow(date, category, amount, note) {
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
