@@ -204,31 +204,20 @@ function addExpenseRow(date, category, amount, note) {
   actionCell.appendChild(deleteBtn);
   row.appendChild(actionCell);
 
-  // Bill Upload
-  const billCell = document.createElement("td");
-  
-  const billInput = document.createElement("input");
-  billInput.type = "file";
-  billInput.className = "bill-upload";
-  billInput.accept = "image/*";
-  billInput.setAttribute("capture", "environment");
-  billInput.style.display = "none"; // hide raw file input
-  
-  const billLabel = document.createElement("upload-label");
-  billLabel.textContent = "Upload Bill";
-  billLabel.setAttribute("for", `bill-${Date.now()}`); // link label to input
-  billLabel.className = "upload-label"; // apply CSS styling
-  
-  // make sure input has same id
-  billInput.id = billLabel.getAttribute("for");
-  
-  billCell.appendChild(billLabel);
-  billCell.appendChild(billInput);
-  row.appendChild(billCell);
+  // Bill Upload Column
+const billCell = document.createElement("td");
+billCell.innerHTML = `
+  <label class="upload-btn">
+    Upload Bill
+    <input type="file" class="bill-upload" accept="image/*" capture="environment">
+  </label>
+`;
+row.appendChild(billCell);
 
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
