@@ -168,51 +168,47 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// Modify addExpense() to include a photo placeholder
-function addExpense(date, category, amount, note, photo = null) {
-    expenses.push({ date, category, amount, note, photo });
+function renderExpenses() {
+  expenseList.innerHTML = "";
+  expenses.forEach((expense, index) => {
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>
+        ${expense.photo 
+          ? `
+            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+            <button onclick="removePhoto(${index})">🗑 Remove</button>
+          `
+          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+        }
+      </td>
+    `;
+    expenseList.appendChild(row);
+  });
+  updateMonthlySummary();
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+
+function uploadPhoto(event, index) {
+  let file = event.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    expenses[index].photo = e.target.result; // save base64 image
     localStorage.setItem("expenses", JSON.stringify(expenses));
     renderExpenses();
-    renderMonthlySummary();
-}
-// Add "Bill Photo" column with capture/upload & download
-function renderExpenses() {
-    const tbody = document.querySelector("#expenseTable tbody");
-    tbody.innerHTML = "";
-
-    expenses.forEach((exp, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-           <td>
-                ${exp.photo 
-                    ? `<a href="${exp.photo}" download="bill-${index}.png">Download</a>` 
-                    : `<button onclick="capturePhoto(${index})">Upload/Capture</button>`}
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+  };
+  reader.readAsDataURL(file);
 }
 
-// Capture or upload photo
-function capturePhoto(index) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.capture = "environment"; // opens camera on mobile
-
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            expenses[index].photo = reader.result; // Save base64
-            localStorage.setItem("expenses", JSON.stringify(expenses));
-            renderExpenses();
-        };
-        if (file) reader.readAsDataURL(file);
-    };
-
-    input.click();
+function removePhoto(index) {
+  expenses[index].photo = null;
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+  renderExpenses();
 }
+
 
 
 
