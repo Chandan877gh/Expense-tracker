@@ -9,100 +9,100 @@ let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 // Initialize chart
 let expenseChart = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [{
-      label: "Expenses",
-      data: [],
-      backgroundColor: [
-        "#007FFF", "#FC5C8C", "#FF4500", "#32CD32", "#FFD700", "#8A2BE2"
-      ]
-    }]
-  },
-  options: {
-    responsive: true
-  }
+type: "pie",
+data: {
+labels: [],
+datasets: [{
+label: "Expenses",
+data: [],
+backgroundColor: [
+"#007FFF", "#FC5C8C", "#FF4500", "#32CD32", "#FFD700", "#8A2BE2"
+]
+}]
+},
+options: {
+responsive: true
+}
 });
 
 // Save to localStorage
 function saveExpenses() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
+localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
 // Render expense list
 function renderExpenses() {
-  expenseList.innerHTML = "";
-  expenses.forEach((exp, index) => {
-    let row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${exp.date}</td>
-      <td>${exp.category}</td>
-      <td>₹${exp.amount}</td>
-      <td>${exp.note}</td>
-    `;
-    expenseList.appendChild(row);
-  });
-  
-  /*// Add delete button events
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      let index = e.target.getAttribute("data-index");
-      expenses.splice(index, 1); // remove expense
-      saveExpenses();
-      renderExpenses(); // re-render after delete
-    });
-  });
+expenseList.innerHTML = "";
+expenses.forEach((exp, index) => {
+let row = document.createElement("tr");
+row.innerHTML = `
+     <td>${exp.date}</td>
+     <td>${exp.category}</td>
+     <td>₹${exp.amount}</td>
+     <td>${exp.note}</td>
+   `;
+expenseList.appendChild(row);
+});
 
-  updateChart();
-  updateMonthlySummary(); // update monthly summary too
-}*/
-  
+// Add delete button events
+document.querySelectorAll(".delete-btn").forEach(btn => {
+btn.addEventListener("click", (e) => {
+let index = e.target.getAttribute("data-index");
+expenses.splice(index, 1); // remove expense
+saveExpenses();
+renderExpenses(); // re-render after delete
+});
+});
+
+updateChart();
+updateMonthlySummary(); // update monthly summary too
+}
+
 // Update chart with totals by category
 function updateChart() {
-  let categoryTotals = {};
-  expenses.forEach(exp => {
-    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + parseFloat(exp.amount);
-  });
+let categoryTotals = {};
+expenses.forEach(exp => {
+categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + parseFloat(exp.amount);
+});
 
-  expenseChart.data.labels = Object.keys(categoryTotals);
-  expenseChart.data.datasets[0].data = Object.values(categoryTotals);
-  expenseChart.update();
+expenseChart.data.labels = Object.keys(categoryTotals);
+expenseChart.data.datasets[0].data = Object.values(categoryTotals);
+expenseChart.update();
 }
 
 // Update monthly summary
 function updateMonthlySummary() {
-  let monthlyTotals = {};
+let monthlyTotals = {};
 
-  expenses.forEach(exp => {
-    let month = exp.date.slice(0, 7); // YYYY-MM
-    monthlyTotals[month] = (monthlyTotals[month] || 0) + parseFloat(exp.amount);
-  });
+expenses.forEach(exp => {
+let month = exp.date.slice(0, 7); // YYYY-MM
+monthlyTotals[month] = (monthlyTotals[month] || 0) + parseFloat(exp.amount);
+});
 
-  monthlySummary.innerHTML = "";
-  for (let [month, total] of Object.entries(monthlyTotals)) {
-    let li = document.createElement("li");
-    li.textContent = `${month}: ₹${total.toFixed(2)}`;
-    monthlySummary.appendChild(li);
-  }
+monthlySummary.innerHTML = "";
+for (let [month, total] of Object.entries(monthlyTotals)) {
+let li = document.createElement("li");
+li.textContent = `${month}: ₹${total.toFixed(2)}`;
+monthlySummary.appendChild(li);
+}
 }
 
 // Handle form submit
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
+e.preventDefault();
 
-  const expense = {
-    date: document.getElementById("date").value,
-    category: document.getElementById("category").value,
-    amount: document.getElementById("amount").value,
-    note: document.getElementById("note").value
-  };
+const expense = {
+date: document.getElementById("date").value,
+category: document.getElementById("category").value,
+amount: document.getElementById("amount").value,
+note: document.getElementById("note").value
+};
 
-  expenses.push(expense);
-  saveExpenses();
-  renderExpenses();
+expenses.push(expense);
+saveExpenses();
+renderExpenses();
 
-  form.reset();
+form.reset();
 });
 
 // Initial render
@@ -112,85 +112,84 @@ renderExpenses();
 
 // ---- Export CSV Feature ----
 document.getElementById("exportBtn").addEventListener("click", function() {
-    let table = document.getElementById("expenseTable");
-    let rows = table.querySelectorAll("tr");
-    let csvContent = "";
+let table = document.getElementById("expenseTable");
+let rows = table.querySelectorAll("tr");
+let csvContent = "";
 
-    rows.forEach((row, rowIndex) => {
-        let cols = row.querySelectorAll("th, td"); // include headers too
-        let rowData = [];
+rows.forEach((row, rowIndex) => {
+let cols = row.querySelectorAll("th, td"); // include headers too
+let rowData = [];
 
-        // Skip the last column (Action/Delete button)
-        cols.forEach((col, colIndex) => {
-            if (colIndex < cols.length - 1) {
-                let text = col.innerText.trim();
+// Skip the last column (Action/Delete button)
+cols.forEach((col, colIndex) => {
+if (colIndex < cols.length - 1) {
+let text = col.innerText.trim();
 
-                // If it's the Amount column (3rd column, index = 2), strip symbols
-                if (rowIndex > 0 && colIndex === 2) {
-                    text = text.replace(/[^0-9.-]+/g, ""); 
-                    // removes everything except digits, minus, and dot
-                }
+// If it's the Amount column (3rd column, index = 2), strip symbols
+if (rowIndex > 0 && colIndex === 2) {
+text = text.replace(/[^0-9.-]+/g, ""); 
+// removes everything except digits, minus, and dot
+}
 
-                rowData.push(text);
-            }
-        });
+rowData.push(text);
+}
+});
 
-        csvContent += rowData.join(",") + "\n";
-    });
+csvContent += rowData.join(",") + "\n";
+});
 
-    // Create downloadable file
-    let blob = new Blob([csvContent], { type: "text/csv" });
-    let url = window.URL.createObjectURL(blob);
+// Create downloadable file
+let blob = new Blob([csvContent], { type: "text/csv" });
+let url = window.URL.createObjectURL(blob);
 
-    let a = document.createElement("a");
-    a.setAttribute("hidden", "");
-    a.setAttribute("href", url);
-    a.setAttribute("download", "expenses.csv");
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+let a = document.createElement("a");
+a.setAttribute("hidden", "");
+a.setAttribute("href", url);
+a.setAttribute("download", "expenses.csv");
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
 });
 
 // Search feature
 document.getElementById("searchInput").addEventListener("input", function () {
-  let filter = this.value.toLowerCase();
-  let rows = document.querySelectorAll("#expense-list tr");
+let filter = this.value.toLowerCase();
+let rows = document.querySelectorAll("#expense-list tr");
 
-  rows.forEach(row => {
-    let text = row.innerText.toLowerCase();  // Check whole row (date, category, amount, note)
-    if (text.includes(filter)) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  });
+rows.forEach(row => {
+let text = row.innerText.toLowerCase();  // Check whole row (date, category, description, amount)
+if (text.includes(filter)) {
+row.style.display = "";
+} else {
+row.style.display = "none";
+}
+});
 });
 
 // ---- Capture bill feature ----
-/*function renderExpenses() {
-  expenseList.innerHTML = "";
-  expenses.forEach((expense, index) => {
-    let row = document.createElement("tr");
+function renderExpenses() {
+expenseList.innerHTML = "";
+expenses.forEach((expense, index) => {
+let row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td>${expense.date}</td>
-      <td>${expense.category}</td>
-      <td>₹${expense.amount}</td>
-      <td>${expense.note}</td>
-      <td>${expense.edit}</td>
-      <td>
-        ${expense.photo 
-          ? `
-            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
-            <button onclick="removePhoto(${index})">🗑 Remove</button>
-          `
-          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
-        }
-      </td>
+row.innerHTML = `
+     <td>${expense.date}</td>
+     <td>${expense.category}</td>
+     <td>₹${expense.amount}</td>
+     <td>${expense.note}</td>
+     <td>
+       ${expense.photo 
+         ? `
+           <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+           <button onclick="removePhoto(${index})">🗑 Remove</button>
+         `
+         : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+       }
+     </td>
       <td><button class="delete-btn" data-index="${index}">Delete</button></td>
-    `;
-    expenseList.appendChild(row);
-  });
+   `;
+expenseList.appendChild(row);
+});
   
   // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -202,153 +201,26 @@ document.getElementById("searchInput").addEventListener("input", function () {
     });
   });
 
-  updateChart();
-  updateMonthlySummary();
-  localStorage.setItem("expenses", JSON.stringify(expenses));
+updateChart();
+updateMonthlySummary();
+localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
 function uploadPhoto(event, index) {
-  let file = event.target.files[0];
-  if (!file) return;
+let file = event.target.files[0];
+if (!file) return;
 
-  let reader = new FileReader();
-  reader.onload = function(e) {
-    expenses[index].photo = e.target.result; // save base64 image
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
-  };
-  reader.readAsDataURL(file);
+let reader = new FileReader();
+reader.onload = function(e) {
+expenses[index].photo = e.target.result; // save base64 image
+localStorage.setItem("expenses", JSON.stringify(expenses));
+renderExpenses();
+};
+reader.readAsDataURL(file);
 }
 
 function removePhoto(index) {
-  expenses[index].photo = null;
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-  renderExpenses();
-}*/
-  
-// ---- Edit feature ----
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-function saveExpenses() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-}
-
-function renderExpenses() {
-    const expenseList = document.getElementById("expense-list");
-    expenseList.innerHTML = "";
-
-    expenses.forEach((expense, index) => {
-        const tr = document.createElement("tr");
-
-        if (expense.editing) {
-            // Editable row
-            tr.innerHTML = `
-                <td><input type="date" id="edit-date-${index}" value="${expense.date}"></td>
-                <td><input type="text" id="edit-category-${index}" value="${expense.category}"></td>
-                <td><input type="number" id="edit-amount-${index}" value="${expense.amount}"></td>
-                <td><input type="text" id="edit-note-${index}" value="${expense.note}"></td>
-                <td>
-                    <button onclick="saveEdit(${index})">💾 Save</button>
-                    <button onclick="cancelEdit(${index})">❌ Cancel</button>
-                </td>
-            `;
-        } else {
-            // Normal row
-            tr.innerHTML = `
-                <td>${expense.date}</td>
-                <td>${expense.category}</td>
-                <td>₹${expense.amount}</td>
-                <td>${expense.note}</td>
-                <td>
-                    <button onclick="editExpense(${index})">✏️ Edit</button>
-                    <button onclick="deleteExpense(${index})">🗑️ Delete</button>
-                </td>
-            `;
-        }
-
-        expenseList.appendChild(tr);
-    });
-
-    updateSummary();
-    updateMonthlyTotals();
-    updateChart();
-}
-
-function addExpense(event) {
-  event.preventDefault();
-
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const note = document.getElementById("note").value;
-
-  if (!date || !category || !amount) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  expenses.push({ date, category, amount, note });
-  saveExpenses();
-  renderExpenses();
-  document.getElementById("expense-form").reset();
-}
-
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  saveExpenses();
-  renderExpenses();
-}
-
-  function editExpense(index) {
-    expenses[index].editing = true;
-    renderExpenses();
-}
-
-function saveEdit(index) {
-    const newDate = document.getElementById(`edit-date-${index}`).value;
-    const newCategory = document.getElementById(`edit-category-${index}`).value;
-    const newAmount = parseFloat(document.getElementById(`edit-amount-${index}`).value);
-    const newNote = document.getElementById(`edit-note-${index}`).value;
-
-    if (!newDate || !newCategory || isNaN(newAmount)) {
-        alert("Please fill all fields correctly!");
-        return;
-    }
-
-    expenses[index] = {
-        date: newDate,
-        category: newCategory,
-        amount: newAmount,
-        note: newNote
-    };
-
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
-}
-
-function cancelEdit(index) {
-    expenses[index].editing = false;
-    renderExpenses();
-}
-
-function editExpense(index) {
-  const expense = expenses[index];
-
-  // Fill the form with the expense values
-  document.getElementById("date").value = expense.date;
-  document.getElementById("category").value = expense.category;
-  document.getElementById("amount").value = expense.amount;
-  document.getElementById("note").value = expense.note;
-
-  // Remove the old one while editing
-  expenses.splice(index, 1);
-  saveExpenses();
-  renderExpenses();
-}
-
-document.getElementById("expense-form").addEventListener("submit", addExpense);
-
+expenses[index].photo = null;
+localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
-
-
