@@ -40,7 +40,6 @@ function renderExpenses() {
       <td>${exp.category}</td>
       <td>₹${exp.amount}</td>
       <td>${exp.note}</td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
     `;
     expenseList.appendChild(row);
   });
@@ -213,6 +212,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
