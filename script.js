@@ -168,51 +168,53 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-document.getElementById("bill").addEventListener("change", function (event) {
-    const file = event.target.files[0]; // first uploaded file
+// Function to add a new expense row
+function addExpenseRow(date, category, amount, note) {
+  const tableBody = document.getElementById("expense-list");
+  const row = document.createElement("tr");
 
-    if (file) {
-        // Store file info in your expenses array
-        expenses.push({
-            date: new Date().toLocaleDateString(),
-            name: file.name,
-            type: "Bill Upload",
-            amount: 0, // default since amount isn’t extracted
-            file: URL.createObjectURL(file) // creates a preview link
-        });
+  // Date
+  const dateCell = document.createElement("td");
+  dateCell.textContent = date;
+  row.appendChild(dateCell);
 
-        // Refresh table after adding new expense
-        updateTable();
-    }
-});
+  // Category
+  const categoryCell = document.createElement("td");
+  categoryCell.textContent = category;
+  row.appendChild(categoryCell);
 
-// Update table function (adds column for uploaded bills)
-function updateTable() {
-    const tbody = document.getElementById("expenseTable").getElementsByTagName("tbody")[0];
-    tbody.innerHTML = "";
+  // Amount
+  const amountCell = document.createElement("td");
+  amountCell.textContent = amount;
+  row.appendChild(amountCell);
 
-    expenses.forEach((expense, index) => {
-        const row = tbody.insertRow();
+  // Note
+  const noteCell = document.createElement("td");
+  noteCell.textContent = note;
+  row.appendChild(noteCell);
 
-        row.insertCell(0).innerText = index + 1;
-        row.insertCell(1).innerText = expense.date;
-        row.insertCell(2).innerText = expense.name;
-        row.insertCell(3).innerText = expense.type;
-        row.insertCell(4).innerText = expense.amount;
+  // Bill Upload
+  const billCell = document.createElement("td");
+  billCell.innerHTML = `
+    <input type="file" class="bill-upload" accept="image/*" capture="environment">
+  `;
+  row.appendChild(billCell);
 
-        // Uploaded Bill column
-        const billCell = row.insertCell(5);
-        if (expense.file) {
-            const link = document.createElement("a");
-            link.href = expense.file;
-            link.target = "_blank";
-            link.innerText = "View Bill";
-            billCell.appendChild(link);
-        } else {
-            billCell.innerText = "—";
-        }
-    });
+  // Action (Delete button)
+  const actionCell = document.createElement("td");
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.onclick = function () {
+    row.remove();
+  };
+  actionCell.appendChild(deleteBtn);
+  row.appendChild(actionCell);
+
+  // Add row to table
+  tableBody.appendChild(row);
 }
+
+
 
 
 
