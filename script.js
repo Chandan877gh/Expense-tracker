@@ -168,49 +168,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// Add "Bill Photo" column with capture/upload & download
-function renderExpenses() {
-    const tbody = document.querySelector("#expenseTable tbody");
-    tbody.innerHTML = "";
 
-    expenses.forEach((exp, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${exp.date}</td>
-            <td>${exp.category}</td>
-            <td>₹${exp.amount}</td>
-            <td>${exp.note}</td>
-            <td><button onclick="deleteExpense(${index})">Delete</button></td>
-            <td>
-                ${exp.photo 
-                    ? `<a href="${exp.photo}" download="bill-${index}.png">Download</a>` 
-                    : `<button onclick="capturePhoto(${index})">Upload/Capture</button>`}
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// Capture or upload photo
-function capturePhoto(index) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.capture = "environment"; // opens camera on mobile
-
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            expenses[index].photo = reader.result; // Save base64
-            localStorage.setItem("expenses", JSON.stringify(expenses));
-            renderExpenses();
-        };
-        if (file) reader.readAsDataURL(file);
-    };
-
-    input.click();
-}
 
 
 
