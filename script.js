@@ -168,43 +168,66 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
-// Create Upload Button
-const uploadBtn = document.createElement("button");
-uploadBtn.className = "upload-btn";
-uploadBtn.textContent = "Upload";
-billCell.appendChild(uploadBtn);
+// --- BILL column (put this before tableBody.appendChild(row);) ---
+const billCell = document.createElement("td");
 
-// File input (hidden)
+// Visible Upload button
+const uploadBtn = document.createElement("button");
+uploadBtn.type = "button";
+uploadBtn.className = "upload-btn";
+uploadBtn.textContent = "Upload Bill";
+
+// Hidden file input
 const fileInput = document.createElement("input");
 fileInput.type = "file";
-fileInput.className = "bill-upload";
 fileInput.accept = "image/*";
+fileInput.setAttribute("capture", "environment");
 fileInput.style.display = "none";
-billCell.appendChild(fileInput);
 
-// Trigger input on button click
-uploadBtn.addEventListener("click", () => {
-  fileInput.click();
-});
+// Clear button (resets the upload)
+const clearBtn = document.createElement("button");
+clearBtn.type = "button";
+clearBtn.className = "bill-clear-btn";
+clearBtn.textContent = "Clear";
 
-// Handle file selection
+// Click Upload → open file picker/camera
+uploadBtn.addEventListener("click", () => fileInput.click());
+
+// When a file is chosen, show a View link and mark as uploaded
 fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) {
+  // remove previous view link if any
+  const oldView = billCell.querySelector(".bill-view-link");
+  if (oldView) oldView.remove();
+
+  if (fileInput.files && fileInput.files[0]) {
     uploadBtn.textContent = "Uploaded ✅";
+    const view = document.createElement("a");
+    view.href = URL.createObjectURL(fileInput.files[0]);
+    view.target = "_blank";
+    view.textContent = "View";
+    view.className = "bill-view-link";
+    billCell.appendChild(view);
+  } else {
+    uploadBtn.textContent = "Upload Bill";
   }
 });
 
-// Create Delete Button
-const deleteBtn = document.createElement("button");
-deleteBtn.className = "delete-btn";
-deleteBtn.textContent = "Delete";
-billCell.appendChild(deleteBtn);
-
-// Delete functionality
-deleteBtn.addEventListener("click", () => {
-  fileInput.value = ""; // clear file
-  uploadBtn.textContent = "Upload"; // reset button text
+// Clear only the file for this row
+clearBtn.addEventListener("click", () => {
+  fileInput.value = "";
+  uploadBtn.textContent = "Upload Bill";
+  const view = billCell.querySelector(".bill-view-link");
+  if (view) view.remove();
 });
+
+// Assemble Bill cell
+billCell.appendChild(uploadBtn);
+billCell.appendChild(fileInput);
+billCell.appendChild(clearBtn);
+
+// IMPORTANT: append Bill cell to the row AFTER Action cell
+row.appendChild(billCell);
+
 
 
 
