@@ -167,64 +167,40 @@ document.getElementById("searchInput").addEventListener("input", function () {
   });
 });
 
-// Capture bill feature
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("expense-form");
-  const tableBody = document.querySelector("#expense-table tbody");
+// --- Bill Capture Feature ---
+document.getElementById("bill").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        // Create image preview + download link
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.width = 80; // small preview
 
-  const saveExpenses = () => {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  };
+        const link = document.createElement("a");
+        link.href = e.target.result;
+        link.download = file.name || "bill.jpg";
+        link.innerText = "Download";
 
-  const renderExpenses = () => {
-    tableBody.innerHTML = "";
-    expenses.forEach((expense, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${expense.date}</td>
-        <td>${expense.description}</td>
-        <td>${expense.amount}</td>
-        <td>
-          ${expense.bill ? `<a href="${expense.bill}" download="bill_${index}.jpg">📷 View</a>` : "—"}
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
-  };
+        // Insert into Bills Column of last added row
+        const table = document.getElementById("expenseTable");
+        const lastRow = table.rows[table.rows.length - 1];
+        if (lastRow) {
+            const billCell = lastRow.insertCell(-1);
+            billCell.appendChild(img);
+            billCell.appendChild(document.createElement("br"));
+            billCell.appendChild(link);
+        }
+    };
+    reader.readAsDataURL(file);
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const date = document.getElementById("date").value;
-    const description = document.getElementById("description").value;
-    const amount = parseFloat(document.getElementById("amount").value);
-    const billInput = document.getElementById("bill");
-
-    if (!date || !description || isNaN(amount)) return;
-
-    let billBase64 = "";
-    if (billInput.files.length > 0) {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        billBase64 = event.target.result;
-        expenses.push({ date, description, amount, bill: billBase64 });
-        saveExpenses();
-        renderExpenses();
-        form.reset();
-      };
-      reader.readAsDataURL(billInput.files[0]);
-    } else {
-      expenses.push({ date, description, amount, bill: "" });
-      saveExpenses();
-      renderExpenses();
-      form.reset();
-    }
-  });
-
-  renderExpenses();
+    // Reset input (so same file can be uploaded again if needed)
+    event.target.value = "";
 });
+
+
 
 
 
