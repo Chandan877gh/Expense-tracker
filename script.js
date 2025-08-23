@@ -169,8 +169,8 @@ document.getElementById("searchInput").addEventListener("input", function () {
 
 // ---- Capture bill feature ----
 // Modify addExpense() to include a photo placeholder
-function addExpense(date, description, amount, category, photo = null) {
-    expenses.push({ date, description, amount, category, photo });
+function addExpense(date, category, amount, note, photo = null) {
+    expenses.push({ date, category, amount, note, photo });
     localStorage.setItem("expenses", JSON.stringify(expenses));
     renderExpenses();
     renderMonthlySummary();
@@ -217,6 +217,7 @@ function capturePhoto(index) {
 
     input.click();
 }
+
 
 
 
