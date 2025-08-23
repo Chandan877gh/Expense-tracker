@@ -24,10 +24,7 @@
 
   <input type="number" id="amount" placeholder="Amount" required>
   <input type="text" id="note" placeholder="Note">
-  
-  <!-- Capture Bill Feature -->
- <input type="file" id="bill" accept="image/*" capture="environment" />
-  
+  <input type="file" id="bill" accept="image/*" capture="environment" /> <!-- Capture Bill Feature -->
   <button type="submit">Add Expense</button>
 </form>
 
@@ -47,7 +44,8 @@
     <th>Category</th>
     <th>Amount</th>
     <th>Note</th>
-    <th>Action</th> <!-- NEW -->
+    <th>Bill</th> <!-- New column -->
+    <th>Action</th> <!-- New column -->
   </tr>
   </thead>
     <tbody id="expense-list"></tbody>
@@ -68,6 +66,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
