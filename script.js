@@ -226,7 +226,9 @@ function removePhoto(index) {
   renderExpenses();
 }*/
   
-/*// ---- Edit feature ----
+// ---- Edit feature ----
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
@@ -297,7 +299,7 @@ function deleteExpense(index) {
   renderExpenses();
 }
 
-function editExpense(index) {
+  function editExpense(index) {
     expenses[index].editing = true;
     renderExpenses();
 }
@@ -346,70 +348,5 @@ function editExpense(index) {
 
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
-renderExpenses();*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+renderExpenses();
 
