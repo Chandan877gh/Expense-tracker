@@ -2,7 +2,7 @@
 const form = document.getElementById("expense-form");
 const expenseList = document.getElementById("expense-list");
 const ctx = document.getElementById("expense-chart").getContext("2d");
-const monthlySummary = document.getElementById("monthly-summary"); // ✅ new
+const monthlySummary = document.getElementById("monthly-summary"); // new
 
 // Load expenses from localStorage or start empty
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
@@ -56,7 +56,7 @@ function renderExpenses() {
   });
 
   updateChart();
-  updateMonthlySummary(); // ✅ update monthly summary too
+  updateMonthlySummary(); // update monthly summary too
 }
 
 // Update chart with totals by category
@@ -71,7 +71,7 @@ function updateChart() {
   expenseChart.update();
 }
 
-// ✅ Update monthly summary
+// Update monthly summary
 function updateMonthlySummary() {
   let monthlyTotals = {};
 
@@ -203,9 +203,13 @@ function addExpenseRow(date, category, amount, note) {
 
   // Bill Upload
   const billCell = document.createElement("td");
-  billCell.innerHTML = `
-    <input type="file" class="bill-upload" accept="image/*" capture="environment">
-  `;
+  const billInput = document.createElement("input");
+  billInput.type = "file";
+  billInput.className = "bill-upload";
+  billInput.accept = "image/*";
+  billInput.setAttribute("capture", "environment");
+  billCell.appendChild(billInput);
+
   actionCell.appendChild(deleteBtn);
   row.appendChild(actionCell);
   row.appendChild(billCell);
@@ -213,6 +217,7 @@ function addExpenseRow(date, category, amount, note) {
   // Add row to table
   tableBody.appendChild(row);
 }
+
 
 
 
