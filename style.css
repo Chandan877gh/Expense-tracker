@@ -160,24 +160,39 @@ canvas {
 }
 
 /* Upload Button */
+.upload-btn,
+.bill-clear-btn {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Upload button style */
 .upload-btn {
   background-color: #007bff;
-  color: white;
+  color: #fff;
 }
+.upload-btn:hover { background-color: #0056b3; }
 
-.upload-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Delete Button */
-.delete-btn {
+/* Clear button style */
+.bill-clear-btn {
   background-color: #dc3545;
-  color: white;
+  color: #fff;
+}
+.bill-clear-btn:hover { background-color: #a71d2a; }
+
+/* "View" link style */
+.bill-view-link {
+  margin-left: 8px;
+  font-size: 13px;
+  text-decoration: underline;
 }
 
-.delete-btn:hover {
-  background-color: #a71d2a;
-}
+
 
 
 
