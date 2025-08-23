@@ -168,60 +168,65 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // Capture bill feature
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("expense-form");
+  const tableBody = document.querySelector("#expense-table tbody");
 
-document.getElementById("addExpenseBtn").addEventListener("click", function () {
-    let date = document.getElementById("date").value;
-    let amount = document.getElementById("amount").value;
-    let fileInput = document.getElementById("billPhoto");
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-    if (!date || !amount) {
-        alert("Please enter date and amount");
-        return;
-    }
+  const saveExpenses = () => {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  };
 
-    let reader = new FileReader();
-    if (fileInput.files[0]) {
-        reader.readAsDataURL(fileInput.files[0]);
-        reader.onload = function () {
-            saveExpense(date, amount, reader.result);
-        };
+  const renderExpenses = () => {
+    tableBody.innerHTML = "";
+    expenses.forEach((expense, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${expense.date}</td>
+        <td>${expense.description}</td>
+        <td>${expense.amount}</td>
+        <td>
+          ${expense.bill ? `<a href="${expense.bill}" download="bill_${index}.jpg">📷 View</a>` : "—"}
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  };
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const date = document.getElementById("date").value;
+    const description = document.getElementById("description").value;
+    const amount = parseFloat(document.getElementById("amount").value);
+    const billInput = document.getElementById("bill");
+
+    if (!date || !description || isNaN(amount)) return;
+
+    let billBase64 = "";
+    if (billInput.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        billBase64 = event.target.result;
+        expenses.push({ date, description, amount, bill: billBase64 });
+        saveExpenses();
+        renderExpenses();
+        form.reset();
+      };
+      reader.readAsDataURL(billInput.files[0]);
     } else {
-        saveExpense(date, amount, null);
+      expenses.push({ date, description, amount, bill: "" });
+      saveExpenses();
+      renderExpenses();
+      form.reset();
     }
+  });
+
+  renderExpenses();
 });
 
-function saveExpense(date, amount, billImage) {
-    let expense = { date, amount, billImage };
-    expenses.push(expense);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    displayExpenses();
-}
 
-function displayExpenses() {
-    let list = document.getElementById("expenseList");
-    list.innerHTML = "";
-    expenses.forEach((exp, index) => {
-        let li = document.createElement("li");
-        li.innerHTML = `${exp.date} - ₹${exp.amount}`;
-        if (exp.billImage) {
-            let img = document.createElement("img");
-            img.src = exp.billImage;
-            img.width = 50;
-            img.height = 50;
-            li.appendChild(img);
-
-            let downloadBtn = document.createElement("a");
-            downloadBtn.href = exp.billImage;
-            downloadBtn.download = `bill-${index + 1}.png`;
-            downloadBtn.innerText = " Download Bill";
-            li.appendChild(downloadBtn);
-        }
-        list.appendChild(li);
-    });
-}
-
-displayExpenses();
 
 
 
