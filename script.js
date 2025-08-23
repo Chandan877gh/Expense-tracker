@@ -349,4 +349,6 @@ function editExpense(index) {
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
 renderExpenses();
+}
+
 
