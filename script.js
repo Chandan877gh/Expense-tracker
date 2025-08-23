@@ -168,12 +168,26 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // ---- Capture bill feature ----
+// Modify addExpense() to include a photo placeholder
+function addExpense(date, category, amount, note, photo = null) {
+    expenses.push({ date, category, amount, note, photo });
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+    renderMonthlySummary();
+}
+
+// Add "Bill Photo" column with capture/upload & download
 function renderExpenses() {
   expenseList.innerHTML = "";
   expenses.forEach((expense, index) => {
     let row = document.createElement("tr");
 
     row.innerHTML = `
+      <td>${expense.date}</td>
+      <td>${expense.category}</td>
+      <td>₹${expense.amount}</td>
+      <td>${expense.note}</td>
+      <td><button onclick="removeExpense(${index})">❌</button></td>
       <td>
         ${expense.photo 
           ? `
@@ -208,6 +222,8 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
+
 
 
 
