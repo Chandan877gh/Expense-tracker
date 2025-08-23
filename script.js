@@ -298,6 +298,38 @@ function deleteExpense(index) {
 }
 
 function editExpense(index) {
+    expenses[index].editing = true;
+    renderExpenses();
+}
+
+function saveEdit(index) {
+    const newDate = document.getElementById(`edit-date-${index}`).value;
+    const newCategory = document.getElementById(`edit-category-${index}`).value;
+    const newAmount = parseFloat(document.getElementById(`edit-amount-${index}`).value);
+    const newNote = document.getElementById(`edit-note-${index}`).value;
+
+    if (!newDate || !newCategory || isNaN(newAmount)) {
+        alert("Please fill all fields correctly!");
+        return;
+    }
+
+    expenses[index] = {
+        date: newDate,
+        category: newCategory,
+        amount: newAmount,
+        note: newNote
+    };
+
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+}
+
+function cancelEdit(index) {
+    expenses[index].editing = false;
+    renderExpenses();
+}
+
+function editExpense(index) {
   const expense = expenses[index];
 
   // Fill the form with the expense values
@@ -315,6 +347,52 @@ function editExpense(index) {
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
 renderExpenses();
+
+// ---- Capture bill feature ----
+function renderExpenses() {
+  expenseList.innerHTML = "";
+  expenses.forEach((expense, index) => {
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${expense.date}</td>
+      <td>${expense.category}</td>
+      <td>₹${expense.amount}</td>
+      <td>${expense.note}</td>
+      <td>${expense.edit}</td>
+      <td>
+        ${expense.photo 
+          ? `
+            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+            <button onclick="removePhoto(${index})">🗑 Remove</button>
+          `
+          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+        }
+      </td>
+      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+    `;
+    expenseList.appendChild(row);
+  });
+  function uploadPhoto(event, index) {
+  let file = event.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    expenses[index].photo = e.target.result; // save base64 image
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto(index) {
+  expenses[index].photo = null;
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+  renderExpenses();
+}
+
+
 
 
 
