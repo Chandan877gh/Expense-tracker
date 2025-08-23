@@ -33,17 +33,30 @@ function saveExpenses() {
 // Render expense list
 function renderExpenses() {
   expenseList.innerHTML = "";
-  expenses.forEach((exp, index) => {
+  expenses.forEach((expense, index) => {
     let row = document.createElement("tr");
+
     row.innerHTML = `
-      <td>${exp.date}</td>
-      <td>${exp.category}</td>
-      <td>₹${exp.amount}</td>
-      <td>${exp.note}</td>
-      <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+      <td>${expense.date}</td>
+      <td>${expense.category}</td>
+      <td>₹${expense.amount}</td>
+      <td>${expense.note}</td>
+      <td><button onclick="removeExpense(${index})">❌</button></td>
+      <td>
+        ${expense.photo 
+          ? `
+            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+            <button onclick="removePhoto(${index})">🗑 Remove</button>
+          `
+          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+        }
+      </td>
     `;
     expenseList.appendChild(row);
   });
+  updateMonthlySummary();
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
 
   // Add delete button events
   document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -213,6 +226,7 @@ function removePhoto(index) {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   renderExpenses();
 }
+
 
 
 
