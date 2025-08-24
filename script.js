@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Render expenses
   function renderExpenses() {
-    expenseTableBody.innerHTML = "";
+    expense-list.innerHTML = "";
     let total = 0;
     let monthTotal = 0;
     const currentMonth = new Date().getMonth();
@@ -330,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
