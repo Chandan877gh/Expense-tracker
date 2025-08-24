@@ -226,110 +226,126 @@ renderExpenses();
 }
 
 // ---- Edit feature ----
-document.addEventListener("DOMContentLoaded", () => {
-  const expenseForm = document.getElementById("expense-form");
-  const expenseTableBody = document.querySelector("#expense-table tbody");
-  const totalAmountEl = document.getElementById("total-amount");
-  const monthTotalEl = document.getElementById("month-total");
+function saveExpenses() {
+  localStorage.setItem("expenses", JSON.stringify(expenses));
+}
 
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-  let editingIndex = null; // track which row is being edited
-
-  renderExpenses();
-
-  // Add Expense
-  expenseForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const date = document.getElementById("date").value;
-    const category = document.getElementById("category").value;
-    const amount = parseFloat(document.getElementById("amount").value);
-    const note = document.getElementById("note").value;
-
-    if (!date || !category || !amount) return;
-
-    if (editingIndex !== null) {
-      // update existing
-      expenses[editingIndex] = { date, category, amount, note };
-      editingIndex = null;
-    } else {
-      // add new
-      expenses.push({ date, category, amount, note });
-    }
-
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    expenseForm.reset();
-    renderExpenses();
-  });
-
-  // Render expenses
-  function renderExpenses() {
+function renderExpenses() {
+    const expenseList = document.getElementById("expense-list");
     expenseList.innerHTML = "";
-    let total = 0;
-    let monthTotal = 0;
-    const currentMonth = new Date().getMonth();
 
     expenses.forEach((expense, index) => {
-      total += expense.amount;
-      if (new Date(expense.date).getMonth() === currentMonth) {
-        monthTotal += expense.amount;
-      }
+        const tr = document.createElement("tr");
 
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${expense.date}</td>
-        <td>${expense.category}</td>
-        <td>${expense.amount.toFixed(2)}</td>
-        <td>${expense.note}</td>
-        <td>
-          <button class="edit-btn" data-index="${index}">Edit</button>
-          <button class="delete-btn" data-index="${index}">Delete</button>
-        </td>
-      `;
-      expenseTableBody.appendChild(row);
+        if (expense.editing) {
+            // Editable row
+            tr.innerHTML = `
+                <td><input type="date" id="edit-date-${index}" value="${expense.date}"></td>
+                <td><input type="text" id="edit-category-${index}" value="${expense.category}"></td>
+                <td><input type="number" id="edit-amount-${index}" value="${expense.amount}"></td>
+                <td><input type="text" id="edit-note-${index}" value="${expense.note}"></td>
+                <td>
+                    <button onclick="saveEdit(${index})">💾 Save</button>
+                    <button onclick="cancelEdit(${index})">❌ Cancel</button>
+                </td>
+            `;
+        } else {
+            // Normal row
+            tr.innerHTML = `
+                <td>${expense.date}</td>
+                <td>${expense.category}</td>
+                <td>₹${expense.amount}</td>
+                <td>${expense.note}</td>
+                <td>
+                    <button onclick="editExpense(${index})">✏️ Edit</button>
+                    <button onclick="deleteExpense(${index})">🗑️ Delete</button>
+                </td>
+            `;
+        }
+
+        expenseList.appendChild(tr);
     });
 
-    totalAmountEl.textContent = total.toFixed(2);
-    monthTotalEl.textContent = monthTotal.toFixed(2);
+    updateChart();
+    updateMonthlySummary();
+}
+
+function addExpense(event) {
+  event.preventDefault();
+
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const note = document.getElementById("note").value;
+
+  if (!date || !category || !amount) {
+    alert("Please fill all fields");
+    return;
   }
 
-  // Handle Edit and Delete buttons
-  expenseTableBody.addEventListener("click", (e) => {
-    if (e.target.classList.contains("delete-btn")) {
-      const index = e.target.dataset.index;
-      expenses.splice(index, 1);
-      localStorage.setItem("expenses", JSON.stringify(expenses));
-      renderExpenses();
+  expenses.push({ date, category, amount, note });
+  saveExpenses();
+  renderExpenses();
+  document.getElementById("expense-form").reset();
+}
+
+function deleteExpense(index) {
+  expenses.splice(index, 1);
+  saveExpenses();
+  renderExpenses();
+}
+
+  function editExpense(index) {
+    expenses[index].editing = true;
+    renderExpenses();
+}
+
+function saveEdit(index) {
+    const newDate = document.getElementById(`edit-date-${index}`).value;
+    const newCategory = document.getElementById(`edit-category-${index}`).value;
+    const newAmount = parseFloat(document.getElementById(`edit-amount-${index}`).value);
+    const newNote = document.getElementById(`edit-note-${index}`).value;
+
+    if (!newDate || !newCategory || isNaN(newAmount)) {
+        alert("Please fill all fields correctly!");
+        return;
     }
 
-    if (e.target.classList.contains("edit-btn")) {
-      const index = e.target.dataset.index;
-      const expense = expenses[index];
+    expenses[index] = {
+        date: newDate,
+        category: newCategory,
+        amount: newAmount,
+        note: newNote
+    };
 
-      document.getElementById("date").value = expense.date;
-      document.getElementById("category").value = expense.category;
-      document.getElementById("amount").value = expense.amount;
-      document.getElementById("note").value = expense.note;
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+    renderExpenses();
+}
 
-      editingIndex = index;
+function cancelEdit(index) {
+    expenses[index].editing = false;
+    renderExpenses();
+}
 
-      // Show Cancel button only during edit
-      let cancelBtn = document.getElementById("cancel-btn");
-      if (!cancelBtn) {
-        cancelBtn = document.createElement("button");
-        cancelBtn.textContent = "Cancel";
-        cancelBtn.id = "cancel-btn";
-        cancelBtn.type = "button";
-        expenseForm.appendChild(cancelBtn);
+function editExpense(index) {
+  const expense = expenses[index];
 
-        cancelBtn.addEventListener("click", () => {
-          expenseForm.reset();
-          editingIndex = null;
-          cancelBtn.remove();
-        });
-      }
-    }
-  });
-});
+  // Fill the form with the expense values
+  document.getElementById("date").value = expense.date;
+  document.getElementById("category").value = expense.category;
+  document.getElementById("amount").value = expense.amount;
+  document.getElementById("note").value = expense.note;
+
+  // Remove the old one while editing
+  expenses.splice(index, 1);
+  saveExpenses();
+  renderExpenses();
+}
+
+document.getElementById("expense-form").addEventListener("submit", addExpense);
+
+renderExpenses();
+
 
 
 
