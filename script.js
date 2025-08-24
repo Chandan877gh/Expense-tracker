@@ -227,7 +227,7 @@ renderExpenses();
 
 // ---- Edit & delete feature ----
 document.addEventListener("DOMContentLoaded", () => {
-  const expenseForm = document.getElementById("expenseForm");
+  const expenseForm = document.getElementById("expense-form");
   const expenseTableBody = document.querySelector("#expenseTable tbody");
   const monthlySummary = document.getElementById("monthlySummary");
 
@@ -323,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderExpenses();
 });
+
 
 
 
