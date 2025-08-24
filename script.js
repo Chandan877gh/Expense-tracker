@@ -296,31 +296,30 @@ function deleteExpense(index) {
 }
 
   function editExpense(index) {
-    expenses[index].editing = true;
-    renderExpenses();
+    expenses[index].editing = true;  // Mark this expense as "editing"
+    renderExpenses(); // Re-render table
 }
 
 function saveEdit(index) {
-    const newDate = document.getElementById(`edit-date-${index}`).value;
-    const newCategory = document.getElementById(`edit-category-${index}`).value;
-    const newAmount = parseFloat(document.getElementById(`edit-amount-${index}`).value);
-    const newNote = document.getElementById(`edit-note-${index}`).value;
+    const date = document.getElementById(`edit-date-${index}`).value;
+    const category = document.getElementById(`edit-category-${index}`).value;
+    const amount = document.getElementById(`edit-amount-${index}`).value;
+    const note = document.getElementById(`edit-note-${index}`).value;
 
-    if (!newDate || !newCategory || isNaN(newAmount)) {
-        alert("Please fill all fields correctly!");
-        return;
-    }
-
+    // Update the expense
     expenses[index] = {
-        date: newDate,
-        category: newCategory,
-        amount: newAmount,
-        note: newNote
+        date,
+        category,
+        amount: parseFloat(amount),
+        note,
+        editing: false
     };
 
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
+    renderExpenses(); // Refresh table
 }
+    //localStorage.setItem("expenses", JSON.stringify(expenses));
+    //renderExpenses();
+
 
 function cancelEdit(index) {
     expenses[index].editing = false;
@@ -345,6 +344,7 @@ function editExpense(index) {
 document.getElementById("expense-form").addEventListener("submit", addExpense);
 
 renderExpenses();
+
 
 
 
