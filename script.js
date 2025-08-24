@@ -262,7 +262,7 @@ function loadExpenseForEditing(index) {
     document.getElementById("bill").value = expense.bill;
 
     editIndex = index; // store index to update later
-    document.getElementById("addBtn").textContent = "Update Expense"; // change button text
+    document.getElementById("submit").textContent = "Update Expense"; // change button text
 }
 
 // -------------------- Update or Add Expense --------------------
@@ -279,7 +279,7 @@ document.getElementById("submit").addEventListener("click", function () {
         // Update existing expense
         expenses[editIndex] = { date, catgory, amount, bill };
         editIndex = -1; // reset edit index
-        document.getElementById("addBtn").textContent = "Add Expense"; // reset button text
+        document.getElementById("submit").textContent = "Add Expense"; // reset button text
     }
 
     // Clear form
@@ -296,6 +296,7 @@ function deleteExpense(index) {
         renderExpenses();
     }
 }
+
 
 
 
