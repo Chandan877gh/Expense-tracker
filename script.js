@@ -266,7 +266,7 @@ function loadExpenseForEditing(index) {
 }
 
 // -------------------- Update or Add Expense --------------------
-document.getElementById("addBtn").addEventListener("click", function () {
+document.getElementById("submit").addEventListener("click", function () {
     const date = document.getElementById("date").value;
     const name = document.getElementById("name").value;
     const particulars = document.getElementById("amount").value;
@@ -296,6 +296,7 @@ function deleteExpense(index) {
         renderExpenses();
     }
 }
+
 
 
 
