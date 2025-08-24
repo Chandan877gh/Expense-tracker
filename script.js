@@ -225,104 +225,91 @@ localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
 
-// ---- Edit & delete feature ----
-document.addEventListener("DOMContentLoaded", () => {
-  const expenseForm = document.getElementById("expense-form");
+// ---- Edit & Delete Feature (Unified with script.js) ----
+let editIndex = null;
+
+// Re-render Expenses (merged version)
+function renderExpenses() {
   const expenseTableBody = document.querySelector("#expenseTable tbody");
-  const monthlySummary = document.getElementById("monthly-summary");
+  expenseTableBody.innerHTML = "";
 
-  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-  let editIndex = null;
+  expenses.forEach((expense, index) => {
+    const row = document.createElement("tr");
 
-  function renderExpenses() {
-    expenseTableBody.innerHTML = "";
+    row.innerHTML = `
+      <td>${expense.date}</td>
+      <td>${expense.category}</td>
+      <td>₹${expense.amount}</td>
+      <td>${expense.note}</td>
+      <td>
+        ${expense.photo 
+          ? `
+            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+            <button onclick="removePhoto(${index})">🗑 Remove</button>
+          `
+          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
+        }
+      </td>
+      <td><button class="edit-btn" data-index="${index}">✏️ Edit</button></td>
+      <td><button class="delete-btn" data-index="${index}">🗑 Delete</button></td>
+    `;
 
-    expenses.forEach((expense, index) => {
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${expense.date}</td>
-        <td>${expense.category}</td>
-        <td>₹${expense.amount}</td>
-        <td>${expense.note}</td>
-        <td><button class="edit-btn" data-index="${index}">Edit</button></td>
-        <td><button class="delete-btn" data-index="${index}">Delete</button></td>
-      `;
-
-      expenseTableBody.appendChild(row);
-    });
-
-    renderMonthlySummary();
-  }
-
-  function renderMonthlySummary() {
-    const summary = {};
-
-    expenses.forEach(expense => {
-      const month = expense.date.slice(0, 7); // YYYY-MM
-      summary[month] = (summary[month] || 0) + parseFloat(expense.amount);
-    });
-
-    monthlySummary.innerHTML = "<h3>Monthly Totals</h3>";
-    for (const [month, total] of Object.entries(summary)) {
-      const p = document.createElement("p");
-      p.textContent = `${month}: ₹${total.toFixed(2)}`;
-      monthlySummary.appendChild(p);
-    }
-  }
-
-  function saveExpenses() {
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-  }
-
-  // Handle form submission
-  expenseForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const date = document.getElementById("date").value;
-    const category = document.getElementById("category").value;
-    const amount = document.getElementById("amount").value;
-    const note = document.getElementById("note").value;
-
-    if (editIndex !== null) {
-      // Update existing
-      expenses[editIndex] = { date, category, amount, note };
-      editIndex = null;
-    } else {
-      // Add new
-      expenses.push({ date, category, amount, note });
-    }
-
-    saveExpenses();
-    renderExpenses();
-    expenseForm.reset();
+    expenseTableBody.appendChild(row);
   });
 
-  // Handle Edit and Delete buttons
-  expenseTableBody.addEventListener("click", (e) => {
-    if (e.target.classList.contains("edit-btn")) {
-      const index = e.target.dataset.index;
-      const expense = expenses[index];
+  // Attach delete/edit button handlers
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      let index = e.target.dataset.index;
+      expenses.splice(index, 1);
+      saveExpenses();
+      renderExpenses();
+    });
+  });
 
-      // Fill form with existing values
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      let index = e.target.dataset.index;
+      let expense = expenses[index];
+
       document.getElementById("date").value = expense.date;
       document.getElementById("category").value = expense.category;
       document.getElementById("amount").value = expense.amount;
       document.getElementById("note").value = expense.note;
 
-      editIndex = index; // Set editing mode
-    }
-
-    if (e.target.classList.contains("delete-btn")) {
-      const index = e.target.dataset.index;
-      expenses.splice(index, 1);
-      saveExpenses();
-      renderExpenses();
-    }
+      editIndex = index; // mark as editing
+    });
   });
 
+  updateChart();
+  updateMonthlySummary();
+  saveExpenses();
+}
+
+// Handle form submit with edit support
+document.getElementById("expense-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const note = document.getElementById("note").value;
+
+  if (editIndex !== null) {
+    // Update existing expense
+    expenses[editIndex] = { ...expenses[editIndex], date, category, amount, note };
+    editIndex = null;
+  } else {
+    // Add new expense
+    expenses.push({ date, category, amount, note });
+  }
+
+  saveExpenses();
   renderExpenses();
+  e.target.reset();
 });
+
+
 
 
 
