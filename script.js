@@ -225,125 +225,104 @@ localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
 
-// ---- Edit feature ----
-function saveExpenses() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
-}
+// ---- Edit & delete feature ----
+document.addEventListener("DOMContentLoaded", () => {
+  const expenseForm = document.getElementById("expenseForm");
+  const expenseTableBody = document.querySelector("#expenseTable tbody");
+  const monthlySummary = document.getElementById("monthlySummary");
 
-function renderExpenses() {
-    const expenseList = document.getElementById("expense-list");
-    expenseList.innerHTML = "";
+  let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+  let editIndex = null;
+
+  function renderExpenses() {
+    expenseTableBody.innerHTML = "";
 
     expenses.forEach((expense, index) => {
-        const tr = document.createElement("tr");
+      const row = document.createElement("tr");
 
-        if (expense.editing) {
-            // Editable row
-            tr.innerHTML = `
-                <td><input type="date" id="edit-date-${index}" value="${expense.date}"></td>
-                <td><input type="text" id="edit-category-${index}" value="${expense.category}"></td>
-                <td><input type="number" id="edit-amount-${index}" value="${expense.amount}"></td>
-                <td><input type="text" id="edit-note-${index}" value="${expense.note}"></td>
-                <td>
-                    <button onclick="saveEdit(${index})">💾 Save</button>
-                    <button onclick="cancelEdit(${index})">❌ Cancel</button>
-                </td>
-            `;
-        } else {
-            // Normal row
-            tr.innerHTML = `
-                <td>${expense.date}</td>
-                <td>${expense.category}</td>
-                <td>₹${expense.amount}</td>
-                <td>${expense.note}</td>
-                <td>
-                    <button onclick="editExpense(${index})">✏️ Edit</button>
-                    <button onclick="deleteExpense(${index})">🗑️ Delete</button>
-                </td>
-            `;
-        }
+      row.innerHTML = `
+        <td>${expense.date}</td>
+        <td>${expense.category}</td>
+        <td>₹${expense.amount}</td>
+        <td>${expense.note}</td>
+        <td><button class="edit-btn" data-index="${index}">Edit</button></td>
+        <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+      `;
 
-        expenseList.appendChild(tr);
+      expenseTableBody.appendChild(row);
     });
 
-    updateChart();
-    updateMonthlySummary();
-}
-
-function addExpense(event) {
-  event.preventDefault();
-
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const note = document.getElementById("note").value;
-
-  if (!date || !category || !amount) {
-    alert("Please fill all fields");
-    return;
+    renderMonthlySummary();
   }
 
-  expenses.push({ date, category, amount, note });
-  saveExpenses();
-  renderExpenses();
-  document.getElementById("expense-form").reset();
-}
+  function renderMonthlySummary() {
+    const summary = {};
 
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  saveExpenses();
-  renderExpenses();
-}
+    expenses.forEach(expense => {
+      const month = expense.date.slice(0, 7); // YYYY-MM
+      summary[month] = (summary[month] || 0) + parseFloat(expense.amount);
+    });
 
-  function editExpense(index) {
-    expenses[index].editing = true;  // Mark this expense as "editing"
-    renderExpenses(); // Re-render table
-}
+    monthlySummary.innerHTML = "<h3>Monthly Totals</h3>";
+    for (const [month, total] of Object.entries(summary)) {
+      const p = document.createElement("p");
+      p.textContent = `${month}: ₹${total.toFixed(2)}`;
+      monthlySummary.appendChild(p);
+    }
+  }
 
-function saveEdit(index) {
-    const date = document.getElementById(`edit-date-${index}`).value;
-    const category = document.getElementById(`edit-category-${index}`).value;
-    const amount = document.getElementById(`edit-amount-${index}`).value;
-    const note = document.getElementById(`edit-note-${index}`).value;
+  function saveExpenses() {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }
 
-    // Update the expense
-    expenses[index] = {
-        date,
-        category,
-        amount: parseFloat(amount),
-        note,
-        editing: false
-    };
+  // Handle form submission
+  expenseForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-    renderExpenses(); // Refresh table
-}
-    //localStorage.setItem("expenses", JSON.stringify(expenses));
-    //renderExpenses();
+    const date = document.getElementById("date").value;
+    const category = document.getElementById("category").value;
+    const amount = document.getElementById("amount").value;
+    const note = document.getElementById("note").value;
 
+    if (editIndex !== null) {
+      // Update existing
+      expenses[editIndex] = { date, category, amount, note };
+      editIndex = null;
+    } else {
+      // Add new
+      expenses.push({ date, category, amount, note });
+    }
 
-function cancelEdit(index) {
-    expenses[index].editing = false;
+    saveExpenses();
     renderExpenses();
-}
+    expenseForm.reset();
+  });
 
-function editExpense(index) {
-  const expense = expenses[index];
+  // Handle Edit and Delete buttons
+  expenseTableBody.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-btn")) {
+      const index = e.target.dataset.index;
+      const expense = expenses[index];
 
-  // Fill the form with the expense values
-  document.getElementById("date").value = expense.date;
-  document.getElementById("category").value = expense.category;
-  document.getElementById("amount").value = expense.amount;
-  document.getElementById("note").value = expense.note;
+      // Fill form with existing values
+      document.getElementById("date").value = expense.date;
+      document.getElementById("category").value = expense.category;
+      document.getElementById("amount").value = expense.amount;
+      document.getElementById("note").value = expense.note;
 
-  // Remove the old one while editing
-  expenses.splice(index, 1);
-  saveExpenses();
+      editIndex = index; // Set editing mode
+    }
+
+    if (e.target.classList.contains("delete-btn")) {
+      const index = e.target.dataset.index;
+      expenses.splice(index, 1);
+      saveExpenses();
+      renderExpenses();
+    }
+  });
+
   renderExpenses();
-}
-
-document.getElementById("expense-form").addEventListener("submit", addExpense);
-
-renderExpenses();
+});
 
 
 
