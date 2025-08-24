@@ -226,7 +226,7 @@ renderExpenses();
 }
 
 // ---- Edit & Delete Feature (Unified with script.js) ----
-// --- Override renderExpenses() with Edit + Delete buttons ---
+// -------------------- UPDATED renderExpenses with Edit + Delete --------------------
 function renderExpenses() {
     const tbody = document.querySelector("#expenseTable tbody");
     tbody.innerHTML = "";
@@ -236,7 +236,8 @@ function renderExpenses() {
 
         row.innerHTML = `
             <td>${expense.date}</td>
-            <td>${expense.creditor}</td>
+            <td>${expense.catgory}</td>
+            <td>${expense.amount}</td>
             <td>${expense.bill}</td>
             <td>
                 <button onclick="loadExpenseForEditing(${index})">Edit</button>
@@ -248,21 +249,55 @@ function renderExpenses() {
 
         tbody.appendChild(row);
     });
-
-    renderMonthlyTotals();
 }
 
-// --- New function to load an expense for editing ---
+// -------------------- Load Expense into Form for Editing --------------------
+let editIndex = -1; // Track which expense is being edited
+
 function loadExpenseForEditing(index) {
     const expense = expenses[index];
-
     document.getElementById("date").value = expense.date;
-    document.getElementById("creditor").value = expense.creditor;
+    document.getElementById("catgory").value = expense.catgory;
+    document.getElementById("amount").value = expense.amount;
     document.getElementById("bill").value = expense.bill;
 
-    // Store index for update
-    document.getElementById("expenseForm").dataset.editIndex = index;
+    editIndex = index; // store index to update later
+    document.getElementById("addBtn").textContent = "Update Expense"; // change button text
 }
+
+// -------------------- Update or Add Expense --------------------
+document.getElementById("addBtn").addEventListener("click", function () {
+    const date = document.getElementById("date").value;
+    const name = document.getElementById("name").value;
+    const particulars = document.getElementById("amount").value;
+    const bill = document.getElementById("bill").value;
+
+    if (editIndex === -1) {
+        // Add new expense
+        expenses.push({ date, catgory, amount, bill });
+    } else {
+        // Update existing expense
+        expenses[editIndex] = { date, catgory, amount, bill };
+        editIndex = -1; // reset edit index
+        document.getElementById("addBtn").textContent = "Add Expense"; // reset button text
+    }
+
+    // Clear form
+    document.getElementById("expense-form").reset();
+
+    // Re-render table
+    renderExpenses();
+});
+
+// -------------------- Delete Expense --------------------
+function deleteExpense(index) {
+    if (confirm("Are you sure you want to delete this expense?")) {
+        expenses.splice(index, 1);
+        renderExpenses();
+    }
+}
+
+
 
 
 
