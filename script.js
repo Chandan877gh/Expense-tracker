@@ -226,88 +226,44 @@ renderExpenses();
 }
 
 // ---- Edit & Delete Feature (Unified with script.js) ----
-let editIndex = null;
-
-// Re-render Expenses (merged version)
+// --- Override renderExpenses() with Edit + Delete buttons ---
 function renderExpenses() {
-  const expenseTableBody = document.querySelector("#expenseTable tbody");
-  expenseTableBody.innerHTML = "";
+    const tbody = document.querySelector("#expenseTable tbody");
+    tbody.innerHTML = "";
 
-  expenses.forEach((expense, index) => {
-    const row = document.createElement("tr");
+    expenses.forEach((expense, index) => {
+        const row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td>${expense.date}</td>
-      <td>${expense.category}</td>
-      <td>₹${expense.amount}</td>
-      <td>${expense.note}</td>
-      <td>
-        ${expense.photo 
-          ? `
-            <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
-            <button onclick="removePhoto(${index})">🗑 Remove</button>
-          `
-          : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
-        }
-      </td>
-      <td><button class="edit-btn" data-index="${index}">✏️ Edit</button></td>
-      <td><button class="delete-btn" data-index="${index}">🗑 Delete</button></td>
-    `;
+        row.innerHTML = `
+            <td>${expense.date}</td>
+            <td>${expense.creditor}</td>
+            <td>${expense.bill}</td>
+            <td>
+                <button onclick="loadExpenseForEditing(${index})">Edit</button>
+            </td>
+            <td>
+                <button onclick="deleteExpense(${index})">Delete</button>
+            </td>
+        `;
 
-    expenseTableBody.appendChild(row);
-  });
-
-  // Attach delete/edit button handlers
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      let index = e.target.dataset.index;
-      expenses.splice(index, 1);
-      saveExpenses();
-      renderExpenses();
+        tbody.appendChild(row);
     });
-  });
 
-  document.querySelectorAll(".edit-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      let index = e.target.dataset.index;
-      let expense = expenses[index];
-
-      document.getElementById("date").value = expense.date;
-      document.getElementById("category").value = expense.category;
-      document.getElementById("amount").value = expense.amount;
-      document.getElementById("note").value = expense.note;
-
-      editIndex = index; // mark as editing
-    });
-  });
-
-  updateChart();
-  updateMonthlySummary();
-  saveExpenses();
+    renderMonthlyTotals();
 }
 
-// Handle form submit with edit support
-document.getElementById("expense-form").addEventListener("submit", (e) => {
-  e.preventDefault();
+// --- New function to load an expense for editing ---
+function loadExpenseForEditing(index) {
+    const expense = expenses[index];
 
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const note = document.getElementById("note").value;
+    document.getElementById("date").value = expense.date;
+    document.getElementById("creditor").value = expense.creditor;
+    document.getElementById("bill").value = expense.bill;
 
-  if (editIndex !== null) {
-    // Update existing expense
-    expenses[editIndex] = { ...expenses[editIndex], date, category, amount, note };
-    editIndex = null;
-  } else {
-    // Add new expense
-    expenses.push({ date, category, amount, note });
-  }
+    // Store index for update
+    document.getElementById("expenseForm").dataset.editIndex = index;
+}
 
-  saveExpenses();
-  renderExpenses();
-  e.target.reset();
-});
 
 
 
