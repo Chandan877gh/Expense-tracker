@@ -229,7 +229,7 @@ renderExpenses();
 document.addEventListener("DOMContentLoaded", () => {
   const expenseForm = document.getElementById("expense-form");
   const expenseTableBody = document.querySelector("#expenseTable tbody");
-  const monthlySummary = document.getElementById("monthlySummary");
+  const monthlySummary = document.getElementById("monthly-summary");
 
   let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
   let editIndex = null;
@@ -323,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderExpenses();
 });
+
 
 
 
