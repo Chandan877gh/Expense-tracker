@@ -226,8 +226,6 @@ renderExpenses();
 }
 
 // ---- Edit & Delete Feature (Unified with script.js) ----
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
 document.getElementById("expense-form").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -351,6 +349,7 @@ function renderSummary() {
 // Initial render
 renderExpenses();
 renderSummary();
+
 
 
 
