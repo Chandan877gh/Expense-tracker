@@ -326,7 +326,7 @@ function deleteExpense(index) {
 }
 
 function renderSummary() {
-    const summaryDiv = document.getElementById("summary");
+    const summaryDiv = document.getElementById("monthly-summary");
     summaryDiv.innerHTML = "";
 
     const monthlyTotals = {};
@@ -349,6 +349,7 @@ function renderSummary() {
 // Initial render
 renderExpenses();
 renderSummary();
+
 
 
 
