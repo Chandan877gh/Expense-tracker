@@ -166,6 +166,7 @@ row.style.display = "none";
 });
 });
 
+/*
 // ---- Capture bill feature ----
 function renderExpenses() {
 expenseList.innerHTML = "";
@@ -224,7 +225,8 @@ expenses[index].photo = null;
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
-
+*/
+     
 // ---- Edit & Delete Feature (Unified with script.js) ----
 document.getElementById("expense-form").addEventListener("submit", function(e) {
     e.preventDefault();
@@ -255,15 +257,6 @@ function renderExpenses() {
             <td>${exp.category}</td>
             <td>${Number(exp.amount).toFixed(2)}</td>
             <td>${exp.note}</td>
-             <td>
-             ${exp.photo 
-              ? `
-                <a href="${exp.photo}" download="bill-${index}.png">📥 Download</a>
-                <button onclick="removePhoto(${index})">🗑 Remove</button>
-              `
-              : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
-             }
-            </td>
             <td><button onclick="editExpense(${index}, this)">Edit</button></td>
             <td><button onclick="deleteExpense(${index})">Delete</button></td>
         `;
@@ -271,7 +264,7 @@ function renderExpenses() {
         tableBody.appendChild(row);
     });
 }
-
+/*
 // ---- Capture bill feature ----
 function uploadPhoto(event, index) {
 let file = event.target.files[0];
@@ -291,7 +284,8 @@ exppenses[index].photo = null;
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
-
+*/
+     
 function editExpense(index, btn) {
     const row = btn.closest("tr");
     const exp = expenses[index];
@@ -369,6 +363,7 @@ tabButtons.forEach(button => {
     document.getElementById(button.dataset.tab).classList.add("active");
   });
 });
+
 
 
 
