@@ -279,7 +279,7 @@ if (!file) return;
 
 let reader = new FileReader();
 reader.onload = function(e) {
-exp[index].photo = e.target.result; // save base64 image
+expenses[index].photo = e.target.result; // save base64 image
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 };
@@ -287,7 +287,7 @@ reader.readAsDataURL(file);
 }
 
 function removePhoto(index) {
-exp[index].photo = null;
+exppenses[index].photo = null;
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
@@ -339,7 +339,7 @@ function renderSummary() {
         if (!monthlyTotals[month]) {
             monthlyTotals[month] = 0;
         }
-        monthlyTotals[month] += exp.amount;
+        monthlyTotals[month] += Number(exp.amount);
     });
 
     for (const month in monthlyTotals) {
@@ -353,6 +353,7 @@ function renderSummary() {
 renderExpenses();
 updateChart();
 renderSummary();
+
 
 
 
