@@ -252,7 +252,7 @@ function renderExpenses() {
         row.innerHTML = `
             <td>${exp.date}</td>
             <td>${exp.category}</td>
-            <td>${exp.amount.toFixed(2)}</td>
+            <td>${Number(exp.amount).toFixed(2)}</td>
             <td>${exp.note}</td>
              <td>
              ${expense.photo 
@@ -349,6 +349,7 @@ function renderSummary() {
 // Initial render
 renderExpenses();
 renderSummary();
+
 
 
 
