@@ -239,6 +239,7 @@ document.getElementById("expense-form").addEventListener("submit", function(e) {
 
     this.reset();
     renderExpenses();
+    updateChart();
     renderSummary();
 });
 
@@ -314,6 +315,7 @@ function editExpense(index, btn) {
 
         btn.textContent = "Edit";
         renderExpenses();
+        updateChart();
         renderSummary();
     }
 }
@@ -322,6 +324,7 @@ function deleteExpense(index) {
     expenses.splice(index, 1);
     localStorage.setItem("expenses", JSON.stringify(expenses));
     renderExpenses();
+    updateChart();
     renderSummary();
 }
 
@@ -348,7 +351,9 @@ function renderSummary() {
 
 // Initial render
 renderExpenses();
+updateChart();
 renderSummary();
+
 
 
 
