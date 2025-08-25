@@ -255,9 +255,9 @@ function renderExpenses() {
             <td>${Number(exp.amount).toFixed(2)}</td>
             <td>${exp.note}</td>
              <td>
-             ${expense.photo 
+             ${exp.photo 
               ? `
-                <a href="${expense.photo}" download="bill-${index}.png">📥 Download</a>
+                <a href="${exp.photo}" download="bill-${index}.png">📥 Download</a>
                 <button onclick="removePhoto(${index})">🗑 Remove</button>
               `
               : `<input type="file" accept="image/*" onchange="uploadPhoto(event, ${index})">`
@@ -278,7 +278,7 @@ if (!file) return;
 
 let reader = new FileReader();
 reader.onload = function(e) {
-expenses[index].photo = e.target.result; // save base64 image
+exp[index].photo = e.target.result; // save base64 image
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 };
@@ -286,7 +286,7 @@ reader.readAsDataURL(file);
 }
 
 function removePhoto(index) {
-expenses[index].photo = null;
+exp[index].photo = null;
 localStorage.setItem("expenses", JSON.stringify(expenses));
 renderExpenses();
 }
@@ -349,6 +349,7 @@ function renderSummary() {
 // Initial render
 renderExpenses();
 renderSummary();
+
 
 
 
