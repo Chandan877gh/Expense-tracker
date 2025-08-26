@@ -386,24 +386,45 @@ function renderBills() {
     const item = document.createElement("div");
     item.classList.add("bill-item");
 
-    // If it's a PDF, show icon instead of image
+    // Detect PDF or Image
     const isPDF = bill.name.toLowerCase().endsWith(".pdf");
-    const preview = isPDF
-      ? `<embed src="${bill.data}" type="application/pdf" width="100" height="100"/>`
-      : `<img src="${bill.data}" alt="${bill.name}">`;
 
-    item.innerHTML = `
-      ${preview}
-      <p class="bill-name">${bill.name}</p>
-      <div class="bill-actions">
-        <button class="rename-btn">Rename</button>
-        <button class="download-btn">Download</button>
-        <button class="delete-btn">Delete</button>
-      </div>
-    `;
+    // Create preview element
+    let previewElement;
+    if (isPDF) {
+      previewElement = document.createElement("div");
+      previewElement.classList.add("pdf-preview");
+      previewElement.textContent = "📄 " + bill.name;
+
+      // Open PDF on click
+      previewElement.addEventListener("click", () => {
+        window.open(bill.data, "_blank");
+      });
+
+    } else {
+      previewElement = document.createElement("img");
+      previewElement.src = bill.data;
+      previewElement.alt = bill.name;
+
+      // Open image on click
+      previewElement.addEventListener("click", () => {
+        window.open(bill.data, "_blank");
+      });
+    }
+
+    // File name
+    const namePara = document.createElement("p");
+    namePara.classList.add("bill-name");
+    namePara.textContent = bill.name;
+
+    // Action buttons
+    const actions = document.createElement("div");
+    actions.classList.add("bill-actions");
 
     // Rename
-    item.querySelector(".rename-btn").addEventListener("click", () => {
+    const renameBtn = document.createElement("button");
+    renameBtn.textContent = "Rename";
+    renameBtn.addEventListener("click", () => {
       const newName = prompt("Enter new name:", bill.name);
       if (newName) {
         bills[index].name = newName;
@@ -413,7 +434,9 @@ function renderBills() {
     });
 
     // Download
-    item.querySelector(".download-btn").addEventListener("click", () => {
+    const downloadBtn = document.createElement("button");
+    downloadBtn.textContent = "Download";
+    downloadBtn.addEventListener("click", () => {
       const link = document.createElement("a");
       link.href = bill.data;
       link.download = bills[index].name;
@@ -421,12 +444,23 @@ function renderBills() {
     });
 
     // Delete
-    item.querySelector(".delete-btn").addEventListener("click", () => {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => {
       bills.splice(index, 1);
       saveBills();
       renderBills();
     });
 
+    // Append buttons
+    actions.appendChild(renameBtn);
+    actions.appendChild(downloadBtn);
+    actions.appendChild(deleteBtn);
+
+    // Append everything
+    item.appendChild(previewElement);
+    item.appendChild(namePara);
+    item.appendChild(actions);
     billGallery.appendChild(item);
   });
 }
@@ -456,6 +490,8 @@ uploadBtn.addEventListener("click", function () {
 
 // Initial render when page loads
 renderBills();
+
+
 
 
 
