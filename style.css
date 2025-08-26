@@ -241,6 +241,25 @@ canvas {
   background: #0056b3;
 }
 
+/* Bills Gallery Styling */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;      /* allows items to move to next row if space is full */
+  gap: 10px;            /* spacing between items */
+  margin-top: 15px;
+}
+
+.gallery img,
+.gallery .pdf-icon {
+  width: 120px;         /* adjust thumbnail size */
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  object-fit: cover;
+}
+
+
 
 
 
