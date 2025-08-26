@@ -148,32 +148,57 @@ canvas {
   outline: none;
 }
 
-/* Tabs */
+/* Tabs Container */
 .tabs {
+  display: flex;
+  gap: 8px;
   margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
 }
 
+/* Tab Buttons */
 .tab-btn {
-  padding: 10px 15px;
-  margin-right: 5px;
+  padding: 10px 18px;
   border: none;
   background: #007bff;
   color: white;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
+.tab-btn:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Active Tab */
 .tab-btn.active {
   background: #0056b3;
+  border-bottom: 2px solid white; /* makes active tab blend into content */
 }
 
+/* Tab Content */
 .tab-content {
   display: none;
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 .tab-content.active {
   display: block;
 }
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
 
 
 
