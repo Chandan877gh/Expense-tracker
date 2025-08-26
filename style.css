@@ -249,6 +249,12 @@ canvas {
   margin-top: 15px;
 }
 
+.gallery-item {
+  width: 120px;
+  text-align: center;
+  cursor: pointer;
+}
+
 .gallery img,
 .gallery .pdf-icon {
   width: 120px;         /* adjust thumbnail size */
@@ -258,6 +264,7 @@ canvas {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   object-fit: cover;
 }
+
 
 
 
