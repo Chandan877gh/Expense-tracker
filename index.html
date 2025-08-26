@@ -12,7 +12,7 @@
   <!-- Tab Navigation -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="add-expense">Add Expense</button>
-    <button class="tab-btn" data-tab="upload-bill">Bills</button>
+    <button class="tab-btn" data-tab="upload-bill">Bills Gallery</button>
     <button class="tab-btn" data-tab="charts">Graph</button>
     <button class="tab-btn" data-tab="summary">Monthly Summary</button>
   </div>
@@ -63,8 +63,12 @@
   <button id="exportBtn">Export as CSV</button>
   </div>
 
+  <!-- Bills Gallery Section -->
   <div class="tab-content" id="upload-bill">
-     <h2>Bills Record</h2>
+    <h2>Bills Gallery</h2>
+    <input type="file" id="billUpload" accept="image/*,.pdf">
+    <button id="uploadBtn">Upload Bill</button>
+    <div id="billsGallery" class="gallery"></div>
   </div>
 
   <!-- Chart Section -->
@@ -83,6 +87,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
