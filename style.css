@@ -196,6 +196,53 @@ canvas {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Gallery Layout */
+#billGallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.bill-item {
+  width: 150px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+.bill-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.bill-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bill-actions button {
+  font-size: 12px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+}
+
+.bill-actions button:hover {
+  background: #0056b3;
+}
+
+
+
 
 
 
