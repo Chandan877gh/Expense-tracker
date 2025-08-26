@@ -371,84 +371,92 @@ const billInput = document.getElementById("billUpload");   // file input
 const uploadBtn = document.getElementById("uploadBtn");    // upload button
 const billGallery = document.getElementById("billsGallery"); // gallery container
 
-// Load saved bills from localStorage or empty
-let savedBills = JSON.parse(localStorage.getItem("bills")) || [];
+// Load saved bills from localStorage or empty array
+let bills = JSON.parse(localStorage.getItem("bills")) || [];
 
-// Render bills from localStorage
+// Save bills to localStorage
+function saveBills() {
+  localStorage.setItem("bills", JSON.stringify(bills));
+}
+
+// Render gallery
 function renderBills() {
-  billGallery.innerHTML = "";
-  savedBills.forEach((bill, index) => {
-    addBillToGallery(bill, index);
+  billGallery.innerHTML = ""; // clear first
+  bills.forEach((bill, index) => {
+    const item = document.createElement("div");
+    item.classList.add("bill-item");
+
+    // If it's a PDF, show icon instead of image
+    const isPDF = bill.name.toLowerCase().endsWith(".pdf");
+    const preview = isPDF
+      ? `<embed src="${bill.data}" type="application/pdf" width="100" height="100"/>`
+      : `<img src="${bill.data}" alt="${bill.name}">`;
+
+    item.innerHTML = `
+      ${preview}
+      <p class="bill-name">${bill.name}</p>
+      <div class="bill-actions">
+        <button class="rename-btn">Rename</button>
+        <button class="download-btn">Download</button>
+        <button class="delete-btn">Delete</button>
+      </div>
+    `;
+
+    // Rename
+    item.querySelector(".rename-btn").addEventListener("click", () => {
+      const newName = prompt("Enter new name:", bill.name);
+      if (newName) {
+        bills[index].name = newName;
+        saveBills();
+        renderBills();
+      }
+    });
+
+    // Download
+    item.querySelector(".download-btn").addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.href = bill.data;
+      link.download = bills[index].name;
+      link.click();
+    });
+
+    // Delete
+    item.querySelector(".delete-btn").addEventListener("click", () => {
+      bills.splice(index, 1);
+      saveBills();
+      renderBills();
+    });
+
+    billGallery.appendChild(item);
   });
 }
 
-// Add one bill item to gallery
-function addBillToGallery(bill, index) {
-  const item = document.createElement("div");
-  item.classList.add("bill-item");
-
-  item.innerHTML = `
-    <img src="${bill.data}" alt="${bill.name}">
-    <p class="bill-name">${bill.name}</p>
-    <div class="bill-actions">
-      <button class="rename-btn">Rename</button>
-      <button class="download-btn">Download</button>
-      <button class="delete-btn">Delete</button>
-    </div>
-  `;
-
-  // Rename
-  item.querySelector(".rename-btn").addEventListener("click", () => {
-    const newName = prompt("Enter new name:", bill.name);
-    if (newName) {
-      savedBills[index].name = newName;
-      localStorage.setItem("bills", JSON.stringify(savedBills));
-      renderBills(); // refresh view
-    }
-  });
-
-  // Download
-  item.querySelector(".download-btn").addEventListener("click", () => {
-    const link = document.createElement("a");
-    link.href = bill.data;
-    link.download = bill.name;
-    link.click();
-  });
-
-  // Delete
-  item.querySelector(".delete-btn").addEventListener("click", () => {
-    savedBills.splice(index, 1);
-    localStorage.setItem("bills", JSON.stringify(savedBills));
-    renderBills();
-  });
-
-  billGallery.appendChild(item);
-}
-
-// Handle upload button
+// Handle file upload (multiple supported)
 uploadBtn.addEventListener("click", function () {
   const files = Array.from(billInput.files);
   if (files.length === 0) return;
 
+  let filesProcessed = 0;
   files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      // Save new bill
-      const newBill = { name: file.name, data: e.target.result };
-      savedBills.push(newBill);
-      localStorage.setItem("bills", JSON.stringify(savedBills));
-
-      renderBills(); // re-render
+      bills.push({ name: file.name, data: e.target.result });
+      filesProcessed++;
+      if (filesProcessed === files.length) {
+        saveBills();
+        renderBills();
+      }
     };
     reader.readAsDataURL(file);
   });
 
-  // Clear input
+  // Clear input so same file can be uploaded again
   billInput.value = "";
 });
 
-// Initial render on page load
+// Initial render when page loads
 renderBills();
+
 
 
 
