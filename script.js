@@ -364,6 +364,64 @@ tabButtons.forEach(button => {
   });
 });
 
+// ================== BILL GALLERY SCRIPT ==================
+
+// Selectors
+const billInput = document.getElementById("billInput");   // file input
+const billGallery = document.getElementById("billGallery"); // gallery container
+
+// Handle file upload
+billInput.addEventListener("change", function () {
+  const files = Array.from(billInput.files);
+
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      // Create gallery item
+      const item = document.createElement("div");
+      item.classList.add("bill-item");
+
+      item.innerHTML = `
+        <img src="${e.target.result}" alt="${file.name}">
+        <p class="bill-name">${file.name}</p>
+        <div class="bill-actions">
+          <button class="rename-btn">Rename</button>
+          <button class="download-btn">Download</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      `;
+
+      // ============ Action buttons ============
+      // Rename
+      item.querySelector(".rename-btn").addEventListener("click", () => {
+        const newName = prompt("Enter new name:", file.name);
+        if (newName) {
+          item.querySelector(".bill-name").textContent = newName;
+        }
+      });
+
+      // Download
+      item.querySelector(".download-btn").addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.href = e.target.result;
+        link.download = item.querySelector(".bill-name").textContent;
+        link.click();
+      });
+
+      // Delete
+      item.querySelector(".delete-btn").addEventListener("click", () => {
+        billGallery.removeChild(item);
+      });
+
+      // Append to gallery
+      billGallery.appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Clear input so same file can be uploaded again if needed
+  billInput.value = "";
+});
 
 
 
