@@ -367,17 +367,18 @@ tabButtons.forEach(button => {
 // ================== BILL GALLERY SCRIPT ==================
 
 // Selectors
-const billInput = document.getElementById("billInput");   // file input
-const billGallery = document.getElementById("billGallery"); // gallery container
+const billInput = document.getElementById("billUpload");   // file input
+const uploadBtn = document.getElementById("uploadBtn");    // upload button
+const billGallery = document.getElementById("billsGallery"); // gallery container
 
 // Handle file upload
-billInput.addEventListener("change", function () {
+uploadBtn.addEventListener("click", function () {
   const files = Array.from(billInput.files);
+  if (files.length === 0) return;
 
   files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      // Create gallery item
       const item = document.createElement("div");
       item.classList.add("bill-item");
 
@@ -391,13 +392,10 @@ billInput.addEventListener("change", function () {
         </div>
       `;
 
-      // ============ Action buttons ============
       // Rename
       item.querySelector(".rename-btn").addEventListener("click", () => {
         const newName = prompt("Enter new name:", file.name);
-        if (newName) {
-          item.querySelector(".bill-name").textContent = newName;
-        }
+        if (newName) item.querySelector(".bill-name").textContent = newName;
       });
 
       // Download
@@ -413,15 +411,16 @@ billInput.addEventListener("change", function () {
         billGallery.removeChild(item);
       });
 
-      // Append to gallery
       billGallery.appendChild(item);
     };
     reader.readAsDataURL(file);
   });
 
-  // Clear input so same file can be uploaded again if needed
+  // Clear input
   billInput.value = "";
 });
+
+
 
 
 
