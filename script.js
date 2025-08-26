@@ -366,76 +366,90 @@ tabButtons.forEach(button => {
 
 // ================== BILL GALLERY SCRIPT ==================
 
-document.addEventListener("DOMContentLoaded", function () {
-  const billInput = document.getElementById("billUpload");
-  const uploadBtn = document.getElementById("uploadBtn");
-  const billsGallery = document.getElementById("billsGallery");
+// Selectors
+const billInput = document.getElementById("billUpload");   // file input
+const uploadBtn = document.getElementById("uploadBtn");    // upload button
+const billGallery = document.getElementById("billsGallery"); // gallery container
 
-  // Load existing bills from localStorage
-  let bills = JSON.parse(localStorage.getItem("bills")) || [];
-  renderBills();
+// Load saved bills from localStorage or empty
+let savedBills = JSON.parse(localStorage.getItem("bills")) || [];
 
-  // Handle file upload
-  uploadBtn.addEventListener("click", function () {
-    const file = billInput.files[0];
-    if (!file) {
-      alert("Please select a file to upload.");
-      return;
+// Render bills from localStorage
+function renderBills() {
+  billGallery.innerHTML = "";
+  savedBills.forEach((bill, index) => {
+    addBillToGallery(bill, index);
+  });
+}
+
+// Add one bill item to gallery
+function addBillToGallery(bill, index) {
+  const item = document.createElement("div");
+  item.classList.add("bill-item");
+
+  item.innerHTML = `
+    <img src="${bill.data}" alt="${bill.name}">
+    <p class="bill-name">${bill.name}</p>
+    <div class="bill-actions">
+      <button class="rename-btn">Rename</button>
+      <button class="download-btn">Download</button>
+      <button class="delete-btn">Delete</button>
+    </div>
+  `;
+
+  // Rename
+  item.querySelector(".rename-btn").addEventListener("click", () => {
+    const newName = prompt("Enter new name:", bill.name);
+    if (newName) {
+      savedBills[index].name = newName;
+      localStorage.setItem("bills", JSON.stringify(savedBills));
+      renderBills(); // refresh view
     }
+  });
 
+  // Download
+  item.querySelector(".download-btn").addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.href = bill.data;
+    link.download = bill.name;
+    link.click();
+  });
+
+  // Delete
+  item.querySelector(".delete-btn").addEventListener("click", () => {
+    savedBills.splice(index, 1);
+    localStorage.setItem("bills", JSON.stringify(savedBills));
+    renderBills();
+  });
+
+  billGallery.appendChild(item);
+}
+
+// Handle upload button
+uploadBtn.addEventListener("click", function () {
+  const files = Array.from(billInput.files);
+  if (files.length === 0) return;
+
+  files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = function (e) {
-      const billData = {
-        name: file.name,
-        type: file.type,
-        dataUrl: e.target.result
-      };
+      // Save new bill
+      const newBill = { name: file.name, data: e.target.result };
+      savedBills.push(newBill);
+      localStorage.setItem("bills", JSON.stringify(savedBills));
 
-      bills.push(billData);
-      localStorage.setItem("bills", JSON.stringify(bills));
-      renderBills();
+      renderBills(); // re-render
     };
-
     reader.readAsDataURL(file);
   });
 
-  // Render bills from array
-  function renderBills() {
-    billsGallery.innerHTML = "";
-
-    bills.forEach((bill, index) => {
-      const billItem = document.createElement("div");
-      billItem.classList.add("bill-item");
-
-      if (bill.type.includes("image")) {
-        const img = document.createElement("img");
-        img.src = bill.dataUrl;
-        img.alt = bill.name;
-        img.style.maxWidth = "150px";
-        img.style.display = "block";
-        billItem.appendChild(img);
-      } else if (bill.type.includes("pdf")) {
-        const link = document.createElement("a");
-        link.href = bill.dataUrl;
-        link.textContent = bill.name;
-        link.target = "_blank";
-        billItem.appendChild(link);
-      }
-
-      // Delete button
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.addEventListener("click", function () {
-        bills.splice(index, 1);
-        localStorage.setItem("bills", JSON.stringify(bills));
-        renderBills();
-      });
-      billItem.appendChild(deleteBtn);
-
-      billsGallery.appendChild(billItem);
-    });
-  }
+  // Clear input
+  billInput.value = "";
 });
+
+// Initial render on page load
+renderBills();
+
 
 
 
