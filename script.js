@@ -389,28 +389,24 @@ function renderBills() {
     // Detect PDF or Image
     const isPDF = bill.name.toLowerCase().endsWith(".pdf");
 
-    // Create preview element
+    // Create preview link
+    const link = document.createElement("a");
+    link.href = bill.data;
+    link.target = "_blank"; // ✅ open in new tab
+
+    // Preview element
     let previewElement;
     if (isPDF) {
       previewElement = document.createElement("div");
       previewElement.classList.add("pdf-preview");
       previewElement.textContent = "📄 " + bill.name;
-
-      // Open PDF on click
-      previewElement.addEventListener("click", () => {
-        window.open(bill.data, "_blank");
-      });
-
     } else {
       previewElement = document.createElement("img");
       previewElement.src = bill.data;
       previewElement.alt = bill.name;
-
-      // Open image on click
-      previewElement.addEventListener("click", () => {
-        window.open(bill.data, "_blank");
-      });
     }
+
+    link.appendChild(previewElement);
 
     // File name
     const namePara = document.createElement("p");
@@ -458,7 +454,7 @@ function renderBills() {
     actions.appendChild(deleteBtn);
 
     // Append everything
-    item.appendChild(previewElement);
+    item.appendChild(link);
     item.appendChild(namePara);
     item.appendChild(actions);
     billGallery.appendChild(item);
@@ -490,6 +486,7 @@ uploadBtn.addEventListener("click", function () {
 
 // Initial render when page loads
 renderBills();
+
 
 
 
