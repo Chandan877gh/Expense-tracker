@@ -364,7 +364,7 @@ tabButtons.forEach(button => {
   });
 });
 
-// ================== BILL GALLERY SCRIPT (with Fixed Lightbox) ==================
+// ================== BILL GALLERY SCRIPT (with Triggered Lightbox) ==================
 
 // Selectors
 const billInput = document.getElementById("billUpload");   // file input
@@ -393,17 +393,20 @@ function renderBills() {
     // Detect PDF or Image
     const isPDF = bill.name.toLowerCase().endsWith(".pdf");
 
-    // Preview element (click → open in lightbox)
+    // Thumbnail preview (click → open in lightbox)
     let previewElement;
     if (isPDF) {
       previewElement = document.createElement("div");
-      previewElement.classList.add("pdf-preview");
+      previewElement.classList.add("pdf-thumb");
       previewElement.textContent = "📄 " + bill.name;
+      previewElement.title = "Click to preview PDF";
       previewElement.addEventListener("click", () => openLightbox("pdf", bill.data));
     } else {
       previewElement = document.createElement("img");
       previewElement.src = bill.data;
       previewElement.alt = bill.name;
+      previewElement.classList.add("thumb");
+      previewElement.title = "Click to preview image";
       previewElement.addEventListener("click", () => openLightbox("image", bill.data));
     }
 
@@ -485,7 +488,7 @@ uploadBtn.addEventListener("click", function () {
 
 // Lightbox functions
 function openLightbox(type, data) {
-  lightbox.classList.remove("hidden");
+  lightbox.style.display = "flex"; // show modal
 
   if (type === "image") {
     lightboxImg.src = data;
@@ -499,18 +502,22 @@ function openLightbox(type, data) {
 }
 
 function closeLightbox() {
-  lightbox.classList.add("hidden");
+  lightbox.style.display = "none";
   lightboxImg.src = "";
   lightboxPdf.src = "";
 }
 
+// Close on X
 lightboxClose.addEventListener("click", closeLightbox);
+
+// Close on background click
 lightbox.addEventListener("click", (e) => {
   if (e.target === lightbox) closeLightbox();
 });
 
-// Initial render when page loads
+// Initial render
 renderBills();
+
 
 
 
