@@ -91,17 +91,20 @@
   <img src="https://via.placeholder.com/150" class="preview" data-type="image" alt="Demo Image">
   <a href="yourfile.pdf" class="preview" data-type="pdf">Open PDF</a>
 
-  <!-- Lightbox container -->
-  <div id="lightbox" class="lightbox">
-    <span id="lightbox-close" class="close">&times;</span>
-    <img id="lightbox-img" class="lightbox-content">
-    <iframe id="lightbox-pdf" class="lightbox-content"></iframe>
-  </div>
+  <!-- Trigger button -->
+<button id="openLightbox">Open Image</button>
+
+<!-- Lightbox container (hidden by default) -->
+<div id="lightbox" class="lightbox" style="display:none;">
+  <span class="close">&times;</span>
+  <img id="lightbox-img" src="" alt="Lightbox Image">
+</div>
     
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
