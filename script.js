@@ -364,7 +364,7 @@ tabButtons.forEach(button => {
   });
 });
 
-// ================== BILL GALLERY SCRIPT (with Lightbox) ==================
+// ================== BILL GALLERY SCRIPT (with Fixed Lightbox) ==================
 
 // Selectors
 const billInput = document.getElementById("billUpload");   // file input
@@ -512,6 +512,8 @@ lightbox.addEventListener("click", (e) => {
 
 // Initial render when page loads
 renderBills();
+
+
 
 
 
