@@ -154,6 +154,7 @@ tabButtons.forEach(button => {
     button.classList.add("active");
     document.getElementById(button.dataset.tab).classList.add("active");
     renderChart(); // refresh chart when switching to Graph tab
+    renderMonthlyChart();
   });
 });
 
@@ -438,6 +439,7 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
 
