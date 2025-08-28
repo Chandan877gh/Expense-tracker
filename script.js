@@ -8,20 +8,6 @@ const monthlySummary = document.getElementById("monthly-summary");
 // Load expenses from localStorage or start empty
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Initialize chart
-let expenseChart = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [{
-      label: "Expenses",
-      data: [],
-      backgroundColor: ["#007FFF", "#FC5C8C", "#FF4500", "#32CD32", "#FFD700", "#8A2BE2"]
-    }]
-  },
-  options: { responsive: true }
-});
-
 // Save to localStorage
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
@@ -66,7 +52,6 @@ function editExpense(index, btn) {
     expenses[index] = { date: newDate, category: newCategory, amount: newAmount, note: newNote };
     saveExpenses();
     renderExpenses();
-    updateChart();
     renderSummary();
   }
 }
@@ -76,20 +61,7 @@ function deleteExpense(index) {
   expenses.splice(index, 1);
   saveExpenses();
   renderExpenses();
-  updateChart();
   renderSummary();
-}
-
-// Update chart
-function updateChart() {
-  const categoryTotals = {};
-  expenses.forEach(exp => {
-    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + Number(exp.amount);
-  });
-
-  expenseChart.data.labels = Object.keys(categoryTotals);
-  expenseChart.data.datasets[0].data = Object.values(categoryTotals);
-  expenseChart.update();
 }
 
 // Monthly summary
@@ -122,7 +94,6 @@ form.addEventListener("submit", (e) => {
   saveExpenses();
   form.reset();
   renderExpenses();
-  updateChart();
   renderSummary();
 });
 
@@ -185,7 +156,6 @@ tabButtons.forEach(button => {
 
 // Initial render
 renderExpenses();
-updateChart();
 renderSummary();
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
@@ -379,4 +349,5 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
