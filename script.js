@@ -143,6 +143,8 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 // Tab switching
+
+// Tab switching
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
 tabButtons.forEach(button => {
@@ -151,34 +153,34 @@ tabButtons.forEach(button => {
     tabContents.forEach(content => content.classList.remove("active"));
     button.classList.add("active");
     document.getElementById(button.dataset.tab).classList.add("active");
-   if (button.dataset.tab === "charts") renderCharts();
+    renderChart(); // refresh chart when switching to Graph tab
   });
 });
 
 // ================== CHART.JS RENDERING ==================
-// ================== CHART.JS RENDERING ==================
-let pieChart;
-let barChart;
+let expenseChart;
 
-function renderCharts() {
-  // ---- Pie Chart: Totals by Category ----
+function renderChart() {
+  // Aggregate totals by category
   const categoryTotals = {};
   expenses.forEach(exp => {
     categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + Number(exp.amount);
   });
 
-  const categoryLabels = Object.keys(categoryTotals);
-  const categoryData = Object.values(categoryTotals);
+  const labels = Object.keys(categoryTotals);
+  const data = Object.values(categoryTotals);
 
-  if (pieChart) pieChart.destroy();
-  const pieCtx = document.getElementById("pieChart").getContext("2d");
-  pieChart = new Chart(pieCtx, {
-    type: "pie",
+  if (expenseChart) {
+    expenseChart.destroy(); // reset chart if it exists
+  }
+
+  expenseChart = new Chart(ctx, {
+    type: "pie", // you can change to "bar" if preferred
     data: {
-      labels: categoryLabels,
+      labels: labels,
       datasets: [{
         label: "Expenses by Category",
-        data: categoryData,
+        data: data,
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -186,7 +188,8 @@ function renderCharts() {
           "#4BC0C0",
           "#9966FF",
           "#FF9F40"
-        ]
+        ],
+        borderWidth: 1
       }]
     },
     options: {
@@ -197,46 +200,12 @@ function renderCharts() {
       }
     }
   });
-
-  // ---- Bar Chart: Monthly Totals ----
-  const monthlyTotals = {};
-  expenses.forEach(exp => {
-    const month = exp.date.slice(0, 7); // YYYY-MM
-    monthlyTotals[month] = (monthlyTotals[month] || 0) + Number(exp.amount);
-  });
-
-  const monthLabels = Object.keys(monthlyTotals);
-  const monthData = Object.values(monthlyTotals);
-
-  if (barChart) barChart.destroy();
-  const barCtx = document.getElementById("barChart").getContext("2d");
-  barChart = new Chart(barCtx, {
-    type: "bar",
-    data: {
-      labels: monthLabels,
-      datasets: [{
-        label: "Monthly Totals (₹)",
-        data: monthData,
-        backgroundColor: "#36A2EB"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: "Monthly Totals" }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
-  });
 }
 
 // Initial render
 renderExpenses();
 renderSummary();
-renderCharts(); // show both charts immediately on load
+renderChart(); // show graph immediately on load
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
 // ================== BILL GALLERY SCRIPT (with Triggered Lightbox + Navigation) ==================
@@ -429,6 +398,7 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
 
