@@ -73,6 +73,15 @@
   
   <!-- Gallery Section -->
   <div id="billsGallery" class="gallery"></div>
+     <!-- Trigger button -->
+    <button id="openLightbox">Open Image</button>
+
+  <!-- Lightbox container (hidden by default) -->
+    <div id="lightbox" class="lightbox hidden">
+    <span id="lightbox-close" class="close">&times;</span>
+    <img id="lightbox-img" src="" alt="Lightbox Image">
+    <iframe id="lightbox-pdf" style="display:none; width:80%; height:80%; border:none;"></iframe>
+  </div>
 </div>
 
   <!-- Chart Section -->
@@ -86,21 +95,12 @@
   <h2>Monthly Totals</h2>
   <ul id="monthly-summary"></ul>
   </div>
-
-  <!-- Trigger button -->
-<button id="openLightbox">Open Image</button>
-
-<!-- Lightbox container (hidden by default) -->
-  <div id="lightbox" class="lightbox hidden">
-    <span id="lightbox-close" class="close">&times;</span>
-    <img id="lightbox-img" src="" alt="Lightbox Image">
-    <iframe id="lightbox-pdf" style="display:none; width:80%; height:80%; border:none;"></iframe>
-  </div>
     
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
