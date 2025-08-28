@@ -361,8 +361,10 @@ canvas {
 
 .billsGallery {
   display: none;
-  
+  opacity: 0;
+  visibility: hidden;
 } 
+
 
 
 
