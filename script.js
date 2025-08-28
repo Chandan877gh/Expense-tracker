@@ -154,7 +154,6 @@ tabButtons.forEach(button => {
     button.classList.add("active");
     document.getElementById(button.dataset.tab).classList.add("active");
     renderChart(); // refresh chart when switching to Graph tab
-    renderMonthlyChart();
   });
 });
 
@@ -200,53 +199,10 @@ function renderChart() {
   });
 }
 
-// ================== BAR CHART FOR MONTHLY TOTAL ==================
-function renderMonthlyChart() {
-  // Aggregate totals by month (YYYY-MM)
-  const monthlyTotals = {};
-  expenses.forEach(exp => {
-    const date = new Date(exp.date);
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
-    monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + Number(exp.amount);
-  });
-
-  const labels = Object.keys(monthlyTotals);
-  const data = Object.values(monthlyTotals);
-
-  if (monthlyChart) {
-    monthlyChart.destroy();
-  }
-
-  const monthlyCtx = document.getElementById("expense-chart").getContext("2d");
-
-  monthlyChart = new Chart(monthlyCtx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Monthly Expenses",
-        data: data,
-        backgroundColor: "#36A2EB"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: "Total Expenses per Month" }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
-  });
-}
-
 // Initial render
 renderExpenses();
 renderSummary();
 renderChart();
-renderMonthlyChart(); // 👈 call it here
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
 // ================== BILL GALLERY SCRIPT (with Triggered Lightbox + Navigation) ==================
@@ -439,6 +395,7 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
 
