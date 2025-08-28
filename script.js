@@ -151,12 +151,59 @@ tabButtons.forEach(button => {
     tabContents.forEach(content => content.classList.remove("active"));
     button.classList.add("active");
     document.getElementById(button.dataset.tab).classList.add("active");
+    renderChart(); // refresh chart when switching to Graph tab
   });
 });
+
+// ================== CHART.JS RENDERING ==================
+let expenseChart;
+
+function renderChart() {
+  // Aggregate totals by category
+  const categoryTotals = {};
+  expenses.forEach(exp => {
+    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + Number(exp.amount);
+  });
+
+  const labels = Object.keys(categoryTotals);
+  const data = Object.values(categoryTotals);
+
+  if (expenseChart) {
+    expenseChart.destroy(); // reset chart if it exists
+  }
+
+  expenseChart = new Chart(ctx, {
+    type: "pie", // you can change to "bar" if preferred
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Expenses by Category",
+        data: data,
+        backgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+          "#FF9F40"
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom" },
+        title: { display: true, text: "Expenses by Category" }
+      }
+    }
+  });
+}
 
 // Initial render
 renderExpenses();
 renderSummary();
+renderChart(); // show graph immediately on load
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
 // ================== BILL GALLERY SCRIPT (with Triggered Lightbox + Navigation) ==================
@@ -349,5 +396,6 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
