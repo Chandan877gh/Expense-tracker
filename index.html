@@ -90,12 +90,17 @@
 </div>
 
   <!-- Chart Section -->
-  <div class="tab-content" id="charts">
-    <canvas id="expense-chart"></canvas>
-    <h2>Expense Graph</h2>
-    <!-- Chart.js canvas -->
-    <canvas id="expenseChart" width="400" height="200"></canvas>
-  </div>
+<div class="tab-content" id="charts">
+  <h2>Expense Graphs</h2>
+
+  <!-- Pie Chart -->
+  <h3>Category Distribution</h3>
+  <canvas id="pieChart" width="400" height="200"></canvas>
+
+  <!-- Bar Chart -->
+  <h3 style="margin-top:20px;">Monthly Totals</h3>
+  <canvas id="barChart" width="400" height="200"></canvas>
+</div>
 
   <div class="tab-content" id="summary">
   <!-- Monthly Totals -->
@@ -107,6 +112,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
