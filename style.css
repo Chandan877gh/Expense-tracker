@@ -359,11 +359,12 @@ canvas {
   font-weight: bold;
 }
 
-.billsGallery {
+#openlightbox {
   display: none;
   opacity: 0;
   visibility: hidden;
 } 
+
 
 
 
