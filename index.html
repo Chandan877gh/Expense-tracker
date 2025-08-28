@@ -75,13 +75,18 @@
   <div id="billsGallery" class="gallery"></div>
      <!-- Trigger button -->
     <button id="openLightbox" hidden>Open Image</button>
-
+    
   <!-- Lightbox container (hidden by default) -->
+     <!-- Lightbox -->
     <div id="lightbox" class="lightbox hidden">
-    <span id="lightbox-close" class="close">&times;</span>
+      <span id="lightbox-close" class="close">&times;</span>
+
+      <!-- Navigation Arrows -->
+      <span id="lightbox-prev" class="lightbox-nav">&#10094;</span>
+      <span id="lightbox-next" class="lightbox-nav">&#10095;</span>
     <img id="lightbox-img" src="" alt="Lightbox Image">
     <iframe id="lightbox-pdf" style="display:none; width:80%; height:80%; border:none;"></iframe>
-  </div>
+ </div>
 </div>
 
   <!-- Chart Section -->
@@ -100,6 +105,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
