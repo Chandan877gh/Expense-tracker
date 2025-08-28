@@ -189,4 +189,194 @@ updateChart();
 renderSummary();
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
-// (keep your version from before, it’s fine!)
+// ================== BILL GALLERY SCRIPT (with Triggered Lightbox + Navigation) ==================
+
+// Selectors
+const billInput = document.getElementById("billUpload");   // file input
+const uploadBtn = document.getElementById("uploadBtn");    // upload button
+const billGallery = document.getElementById("billsGallery"); // gallery container
+const lightbox = document.getElementById("lightbox");       // lightbox container
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxPdf = document.getElementById("lightbox-pdf");
+const lightboxClose = document.getElementById("lightbox-close");
+
+// New navigation arrows
+const lightboxPrev = document.getElementById("lightbox-prev");
+const lightboxNext = document.getElementById("lightbox-next");
+
+// Load saved bills from localStorage or empty array
+let bills = JSON.parse(localStorage.getItem("bills")) || [];
+
+// Track current index in lightbox
+let currentIndex = 0;
+
+// Save bills to localStorage
+function saveBills() {
+  localStorage.setItem("bills", JSON.stringify(bills));
+}
+
+// Render gallery
+function renderBills() {
+  billGallery.innerHTML = ""; // clear first
+  bills.forEach((bill, index) => {
+    const item = document.createElement("div");
+    item.classList.add("bill-item");
+
+    // Detect PDF or Image
+    const isPDF = bill.name.toLowerCase().endsWith(".pdf");
+
+    // Thumbnail preview (click → open in lightbox)
+    let previewElement;
+    if (isPDF) {
+      previewElement = document.createElement("div");
+      previewElement.classList.add("pdf-thumb");
+      previewElement.textContent = "📄 " + bill.name;
+      previewElement.title = "Click to preview PDF";
+      previewElement.addEventListener("click", () => openLightbox(index));
+    } else {
+      previewElement = document.createElement("img");
+      previewElement.src = bill.data;
+      previewElement.alt = bill.name;
+      previewElement.classList.add("thumb");
+      previewElement.title = "Click to preview image";
+      previewElement.addEventListener("click", () => openLightbox(index));
+    }
+
+    // File name
+    const namePara = document.createElement("p");
+    namePara.classList.add("bill-name");
+    namePara.textContent = bill.name;
+
+    // Action buttons
+    const actions = document.createElement("div");
+    actions.classList.add("bill-actions");
+
+    // Rename
+    const renameBtn = document.createElement("button");
+    renameBtn.textContent = "Rename";
+    renameBtn.addEventListener("click", () => {
+      const newName = prompt("Enter new name:", bill.name);
+      if (newName) {
+        bills[index].name = newName;
+        saveBills();
+        renderBills();
+      }
+    });
+
+    // Download
+    const downloadBtn = document.createElement("button");
+    downloadBtn.textContent = "Download";
+    downloadBtn.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.href = bill.data;
+      link.download = bills[index].name;
+      link.click();
+    });
+
+    // Delete
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => {
+      bills.splice(index, 1);
+      saveBills();
+      renderBills();
+    });
+
+    // Append buttons
+    actions.appendChild(renameBtn);
+    actions.appendChild(downloadBtn);
+    actions.appendChild(deleteBtn);
+
+    // Append everything
+    item.appendChild(previewElement);
+    item.appendChild(namePara);
+    item.appendChild(actions);
+    billGallery.appendChild(item);
+  });
+}
+
+// Handle file upload (multiple supported)
+uploadBtn.addEventListener("click", function () {
+  const files = Array.from(billInput.files);
+  if (files.length === 0) return;
+
+  let filesProcessed = 0;
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      bills.push({ name: file.name, data: e.target.result });
+      filesProcessed++;
+      if (filesProcessed === files.length) {
+        saveBills();
+        renderBills();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Clear input so same file can be uploaded again
+  billInput.value = "";
+});
+
+// Lightbox functions
+function openLightbox(index) {
+  currentIndex = index;
+  lightbox.style.display = "flex"; // show modal
+  showBill(currentIndex);
+}
+
+function showBill(index) {
+  const bill = bills[index];
+  if (!bill) return;
+
+  const isPDF = bill.name.toLowerCase().endsWith(".pdf");
+
+  if (isPDF) {
+    lightboxPdf.src = bill.data;
+    lightboxPdf.style.display = "block";
+    lightboxImg.style.display = "none";
+  } else {
+    lightboxImg.src = bill.data;
+    lightboxImg.style.display = "block";
+    lightboxPdf.style.display = "none";
+  }
+}
+
+function closeLightbox() {
+  lightbox.style.display = "none";
+  lightboxImg.src = "";
+  lightboxPdf.src = "";
+}
+
+// Navigation handlers
+function prevBill() {
+  currentIndex = (currentIndex - 1 + bills.length) % bills.length;
+  showBill(currentIndex);
+}
+
+function nextBill() {
+  currentIndex = (currentIndex + 1) % bills.length;
+  showBill(currentIndex);
+}
+
+// Close on X
+lightboxClose.addEventListener("click", closeLightbox);
+
+// Close on background click
+lightbox.addEventListener("click", (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+// Next/Prev arrow listeners
+lightboxPrev.addEventListener("click", (e) => {
+  e.stopPropagation();
+  prevBill();
+});
+lightboxNext.addEventListener("click", (e) => {
+  e.stopPropagation();
+  nextBill();
+});
+
+// Initial render
+renderBills();
+
