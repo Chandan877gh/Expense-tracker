@@ -359,6 +359,11 @@ canvas {
   font-weight: bold;
 }
 
+.openLightbox {
+  display: none;
+  
+} 
+
 
 
 
