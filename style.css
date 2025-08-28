@@ -265,6 +265,19 @@ canvas {
   object-fit: cover;
 }
 
+#lightbox img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+#lightbox iframe {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
+
 
 
 
