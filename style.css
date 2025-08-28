@@ -359,14 +359,7 @@ canvas {
   font-weight: bold;
 }
 
-.thumb {
-  width: 150px;          /* fixed width for thumbnails */
-  height: 100px;         /* fixed height → this sets aspect ratio */
-  object-fit: cover;     /* crops instead of stretching */
-  border-radius: 6px;    /* optional, rounded corners */
-  cursor: pointer;
-  display: block;
-}
+
 
 
 
