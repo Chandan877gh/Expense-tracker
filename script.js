@@ -364,12 +364,15 @@ tabButtons.forEach(button => {
   });
 });
 
-// ================== BILL GALLERY SCRIPT ==================
+// ================== BILL GALLERY SCRIPT (with Lightbox) ==================
 
 // Selectors
 const billInput = document.getElementById("billUpload");   // file input
 const uploadBtn = document.getElementById("uploadBtn");    // upload button
 const billGallery = document.getElementById("billsGallery"); // gallery container
+const lightbox = document.getElementById("lightbox");       // lightbox container
+const lightboxContent = document.getElementById("lightbox-content"); 
+const lightboxClose = document.getElementById("lightbox-close");
 
 // Load saved bills from localStorage or empty array
 let bills = JSON.parse(localStorage.getItem("bills")) || [];
@@ -389,24 +392,19 @@ function renderBills() {
     // Detect PDF or Image
     const isPDF = bill.name.toLowerCase().endsWith(".pdf");
 
-    // Create preview link
-    const link = document.createElement("a");
-    link.href = bill.data;
-    link.target = "_blank"; // ✅ open in new tab
-
-    // Preview element
+    // Preview element (click → open in lightbox)
     let previewElement;
     if (isPDF) {
       previewElement = document.createElement("div");
       previewElement.classList.add("pdf-preview");
       previewElement.textContent = "📄 " + bill.name;
+      previewElement.addEventListener("click", () => openLightbox("pdf", bill.data));
     } else {
       previewElement = document.createElement("img");
       previewElement.src = bill.data;
       previewElement.alt = bill.name;
+      previewElement.addEventListener("click", () => openLightbox("image", bill.data));
     }
-
-    link.appendChild(previewElement);
 
     // File name
     const namePara = document.createElement("p");
@@ -454,7 +452,7 @@ function renderBills() {
     actions.appendChild(deleteBtn);
 
     // Append everything
-    item.appendChild(link);
+    item.appendChild(previewElement);
     item.appendChild(namePara);
     item.appendChild(actions);
     billGallery.appendChild(item);
@@ -484,8 +482,38 @@ uploadBtn.addEventListener("click", function () {
   billInput.value = "";
 });
 
+// Lightbox functions
+function openLightbox(type, data) {
+  lightbox.classList.remove("hidden");
+  lightboxContent.innerHTML = "";
+
+  if (type === "image") {
+    const img = document.createElement("img");
+    img.src = data;
+    img.classList.add("max-w-full", "max-h-[90vh]", "mx-auto");
+    lightboxContent.appendChild(img);
+  } else if (type === "pdf") {
+    const iframe = document.createElement("iframe");
+    iframe.src = data;
+    iframe.classList.add("w-[80vw]", "h-[90vh]");
+    lightboxContent.appendChild(iframe);
+  }
+}
+
+function closeLightbox() {
+  lightbox.classList.add("hidden");
+  lightboxContent.innerHTML = "";
+}
+
+lightboxClose.addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
 // Initial render when page loads
 renderBills();
+
+
 
 
 
