@@ -217,7 +217,7 @@ function renderMonthlyChart() {
     monthlyChart.destroy();
   }
 
-  const monthlyCtx = document.getElementById("monthlyChart").getContext("2d");
+  const monthlyCtx = document.getElementById("expenseChart").getContext("2d");
 
   monthlyChart = new Chart(monthlyCtx, {
     type: "bar",
@@ -439,6 +439,7 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
 
