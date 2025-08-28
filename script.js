@@ -151,34 +151,34 @@ tabButtons.forEach(button => {
     tabContents.forEach(content => content.classList.remove("active"));
     button.classList.add("active");
     document.getElementById(button.dataset.tab).classList.add("active");
-    renderChart(); // refresh chart when switching to Graph tab
+   if (button.dataset.tab === "charts") renderCharts();
   });
 });
 
 // ================== CHART.JS RENDERING ==================
-let expenseChart;
+// ================== CHART.JS RENDERING ==================
+let pieChart;
+let barChart;
 
-function renderChart() {
-  // Aggregate totals by category
+function renderCharts() {
+  // ---- Pie Chart: Totals by Category ----
   const categoryTotals = {};
   expenses.forEach(exp => {
     categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + Number(exp.amount);
   });
 
-  const labels = Object.keys(categoryTotals);
-  const data = Object.values(categoryTotals);
+  const categoryLabels = Object.keys(categoryTotals);
+  const categoryData = Object.values(categoryTotals);
 
-  if (expenseChart) {
-    expenseChart.destroy(); // reset chart if it exists
-  }
-
-  expenseChart = new Chart(ctx, {
-    type: "pie", // you can change to "bar" if preferred
+  if (pieChart) pieChart.destroy();
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+  pieChart = new Chart(pieCtx, {
+    type: "pie",
     data: {
-      labels: labels,
+      labels: categoryLabels,
       datasets: [{
         label: "Expenses by Category",
-        data: data,
+        data: categoryData,
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -186,8 +186,7 @@ function renderChart() {
           "#4BC0C0",
           "#9966FF",
           "#FF9F40"
-        ],
-        borderWidth: 1
+        ]
       }]
     },
     options: {
@@ -198,12 +197,46 @@ function renderChart() {
       }
     }
   });
+
+  // ---- Bar Chart: Monthly Totals ----
+  const monthlyTotals = {};
+  expenses.forEach(exp => {
+    const month = exp.date.slice(0, 7); // YYYY-MM
+    monthlyTotals[month] = (monthlyTotals[month] || 0) + Number(exp.amount);
+  });
+
+  const monthLabels = Object.keys(monthlyTotals);
+  const monthData = Object.values(monthlyTotals);
+
+  if (barChart) barChart.destroy();
+  const barCtx = document.getElementById("barChart").getContext("2d");
+  barChart = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels: monthLabels,
+      datasets: [{
+        label: "Monthly Totals (₹)",
+        data: monthData,
+        backgroundColor: "#36A2EB"
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: "Monthly Totals" }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
 }
 
 // Initial render
 renderExpenses();
 renderSummary();
-renderChart(); // show graph immediately on load
+renderCharts(); // show both charts immediately on load
 
 // ================== BILL GALLERY SCRIPT (with Lightbox + Navigation) ==================
 // ================== BILL GALLERY SCRIPT (with Triggered Lightbox + Navigation) ==================
@@ -396,6 +429,7 @@ lightboxNext.addEventListener("click", (e) => {
 
 // Initial render
 renderBills();
+
 
 
 
